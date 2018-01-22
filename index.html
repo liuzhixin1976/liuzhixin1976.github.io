@@ -469,8 +469,6 @@ MathJax.Hub.Config({
 <div id="sequence-0"></div>
 
 
-<p align="center"><br><img src="images/MDP.png" alt="Agent-Environment Interaction"><br></p>
-
 <p>我们在面临应用强化学习解决现实问题的时候，首先要明确的就是边界问题：Agent是什么？环境是什么？如何定义状态？环境的反馈Reward如何定义？等等。首先Agent的主动权在于选择动作，环境的主动权在于对状态和动作的反馈。例如，一道思考题：如果我们抽象如下问题，调整价格如何影响销量，以及销量如何反过来指导价格，在这个抽象模型中，Agent是什么？环境是什么？再进一步，价格调整之后，客户购买这一商品的目的不再是为了满足当前状态下的需要，反而是对价格变动这一Action进行的Reward（例如，囤货行为），那么Agent与环境又分别是什么？搞清问题目标和边界永远是最重要的。</p>
 <p>我们继续回到这个问题描述中，如果Agent的状态存在Markov性，那么我们把时间轴上的这一系列交互称为Markov Decision Process (MDP)。基于此，MDP可以用如下条件概率来表示</p>
 <p>$$<br>p(s^\prime,r|s,a) = Pr(S_{t+1}=s^\prime,R_{t+1}=r|S_t=s,A_t=a)<br>$$</p>
@@ -478,7 +476,7 @@ MathJax.Hub.Config({
 <p>$$<br>r(s,a)=\mathbb{E}(R_{t+1}|S_t=s,A_t=a)=\sum \limits_{r\in \mathcal{R}}r\sum \limits_{s^\prime\in\mathcal{S}}p(s^\prime,r|s,a)<br>$$</p>
 <p>再比如，状态转移概率为</p>
 <p>$$<br>p(s^{\prime}|s,a)=Pr(S_{t+1}=s^\prime|S_t=s,A_t=a)=\sum \limits_{r\in\mathcal{R}}p(s^\prime,r|s,a)<br>$$</p>
-<p><script src="https://cdnjs.cat.net/ajax/libs/webfont/1.6.27/webfontloader.js"></script><script src="https://cdnjs.cat.net/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script><script src="https://cdnjs.cat.net/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="https://cdnjs.cat.net/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script><textarea id="sequence-0-code" style="display: none">​Agent->Env: action
+<p><script src="https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js"></script><script src="https://cdn.bootcss.com/raphael/2.2.7/raphael.min.js"></script><script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore-min.js"></script><script src="https://cdn.bootcss.com/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script><textarea id="sequence-0-code" style="display: none">​Agent->Env: action
 Env->Agent: state, reward</textarea><textarea id="sequence-0-options" style="display: none">{"theme":"simple"}</textarea><script>  var code = document.getElementById("sequence-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("sequence-0-options").value));  var diagram = Diagram.parse(code);  diagram.drawSVG("sequence-0", options);</script></p>
 
           
