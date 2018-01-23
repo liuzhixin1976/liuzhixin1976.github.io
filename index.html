@@ -249,6 +249,205 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="刘志欣">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="About Reinforcement Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/23/强化学习漫谈-3-DP/" itemprop="url">强化学习漫谈 3：DP</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T10:06:56+08:00">
+                2018-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<blockquote class="blockquote-center"><p>The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the search for good policies.</p>
+</blockquote>
+<p>Dynamic Programming(DP) 是求解MDP的最优策略的基本方法，虽然不是计算最优，但它是后续一系列方法的基础。</p>
+<h3 id="Policy-Evaluation"><a href="#Policy-Evaluation" class="headerlink" title="Policy Evaluation"></a>Policy Evaluation</h3><p>从Bellman公式$v_\pi(s)=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_\pi(s^\prime)]$出发，如果状态空间有限（有terminate state，或者称为episodic task），并且environment’s dynamic $p(s^\prime,r|s,a)$已知，则可以用求解方程组的方式求出value function。但是显然这么做不是一个好办法。因此我们引入DP，使用迭代(iterative)的方法来估算$v_\pi(s)$。</p>
+<p>$\forall s \in \mathcal{S}$，初始化$v_0(s)$（注意此处简化下标，省略了$\pi$)为任何arbitrary初始值。然后运用下式来迭代计算$v(s)$。这种估算state value的方法称为<strong>policy evaluation</strong>。</p>
+<p>\begin{equation}<br>v_{k+1}(s)=\mathbb{E}_{\pi}[R_{t+1}+\gamma v_k(S_{t+1})|S_t=s]=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]\label{eq3:PE}<br>\end{equation}</p>
+<p>这种迭代的方法是使用每个状态的所有后续状态的value估计值来更新当前状态value的估计值，因此被称为“<strong><em>full backup</em></strong>”。$v_{k+1}(s)$与$v_k(s^\prime)$可以是两个不同的序列，也可以是同一个序列进行原地更新(in place update)。</p>
+<p>使用DP进行policy evaluation的伪代码如下：</p>
+<blockquote>
+<blockquote>
+<p>Input $\pi$, the policy to be evaluated<br>Initialize an array $V(s)=0$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
+<blockquote>
+<blockquote>
+<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<blockquote>
+<blockquote>
+<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$  </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>until $\Delta &lt; \theta$ (a small positive number)<br>Output $V\approx v_\pi$</p>
+</blockquote>
+</blockquote>
+<h3 id="Policy-Improvement"><a href="#Policy-Improvement" class="headerlink" title="Policy Improvement"></a>Policy Improvement</h3><p>求出$v_\pi(s)$或者$q_\pi(s,a)$之后，下一步就是如何改进policy了。我们先从一个简单的场景入手：policy都是deterministic的，也就是$\pi(s)=a$，每一个状态的对应action只有一个唯一的选择。</p>
+<p>假设$\pi$与$\pi^\prime$是两个不同的确定性策略(deterministic policy)，使得$\forall s \in \mathcal{S}$，<br>\begin{equation}<br>q_\pi(s,\pi^\prime(s))\ge q_\pi(s,\pi(s))\label{eq3:PI_theorem}<br>\end{equation}<br>那么$v_{\pi^\prime}(s)\ge v_\pi(s)$。</p>
+<p><em>Note</em>: $\eqref{eq3:PI_theorem}$如何理解？我们要记住$q(s,a)$指的是当前状态$s$并采取行动$a$，然后在<strong>之后</strong>的后续状态采用策略$\pi$。这样就不会混淆表达式中的$\pi$与$\pi^\prime$</p>
+<p><em>证明</em>：<br>因为$\pi$是确定性策略，且$v_\pi(s)=\sum_a \pi(a|s)q_\pi(s,a)$，所以<br>$$<br>q_\pi(s,\pi^\prime(s))\ge v_\pi(s)<br>$$<br>(对于$\pi$是随机性策略也就是存在$\pi(a|s)$分布的情况，同样可得这样的结论。)<br>所以由上式以及Bellman公式$q_\pi(s,a)=\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=a]$，我们可得<br>\begin{eqnarray}<br>v_\pi(s)&amp;\le&amp;q_\pi(s,\pi^\prime(s))\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma v_\pi(S_{t+1})]|S_t=s]\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi^\prime(S_{t+1}))|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma \mathbb{E}_{\pi^\prime}[R_{t+2}+\gamma v_\pi(S_{t+2})]|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\notag\\<br>&amp;…&amp;\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+2}+\gamma^3R_{t+3}+…|S_t=s]\notag\\<br>&amp;=&amp;v_{\pi^\prime}(s)\label{eq3:PI}<br>\end{eqnarray}<br>证毕。</p>
+<p>$\eqref{eq3:PI}$说明了，在满足$\eqref{eq3:PI_theorem}$的情况下（$\eqref{eq3:PI_theorem}$实际是首先对所有状态进行广度搜索），对每一步进行greedy的策略改进，就可以最终得到最优策略$\pi^\ast$。由于最优策略存在，所以每一步的greedy策略改进会收敛到全局最优。为什么呢？因为我们每一步的策略改进都是针对整个状态空间进行了广度搜索的啊。最优策略以及最优策略下的optimal value参见上节。</p>
+<p>如果单步的策略改进存在多个$a^\prime$怎么办？这种情况下$\pi^\prime$是随机分布的策略，其概率分布在多个$a^\prime$上，分布函数待定。。。</p>
+<h3 id="Policy-Iteration-or-Value-Iteration"><a href="#Policy-Iteration-or-Value-Iteration" class="headerlink" title="Policy Iteration or Value Iteration"></a>Policy Iteration or Value Iteration</h3><p>从任意给定policy $\pi_0$出发，迭代进行Policy Evaluation $\eqref{eq3:PE}$与Policy Improvement $\eqref{eq3:PI_theorem}$，就可以得到最佳策略$\pi^\ast$，如下所示：<br>$$<br>\pi_0\stackrel{E}{\longrightarrow}v_{\pi_0}\stackrel{I}{\longrightarrow}\pi_1\stackrel{E}{\longrightarrow}v_{\pi_1}\stackrel{I}{\longrightarrow}\pi_2\stackrel{E}{\longrightarrow}…\stackrel{I}{\longrightarrow}\pi^\ast\stackrel{E}{\longrightarrow}v_\ast<br>$$<br>这一过程称为<strong>Policy Iteration</strong>，伪代码如下：</p>
+<blockquote>
+<blockquote>
+<ol>
+<li>Initialize $V(s)\in\mathbb{R}$, and $\pi(s)\in\mathcal{A}(s)$ $\forall s \in \mathcal{S}^+$</li>
+<li><strong>Policy Evaluation</strong><br>Repeat<blockquote>
+<blockquote>
+<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<blockquote>
+<blockquote>
+<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \sum_{s^\prime,r}p(s^\prime,r|s,\pi(s))[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$<br>until $\Delta &lt; \theta$ (a small positive number)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+<li><strong>Policy Improvement</strong><br>policy_stable$\leftarrow$true<br>For each $s\in\mathcal{S}$:<blockquote>
+<blockquote>
+<p>old_action$\leftarrow\pi(s)$<br>$\pi(s)\leftarrow\mathop{argmax} \limits_{a}\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>if old_action$\neq\pi(s)$, then policy_stable$\leftarrow$false<br>if policy_stable, then stop and return $V\approx v_\ast$, and $\pi\approx\pi^\ast$; else go to 2</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+</blockquote>
+<p>Policy Iteration的问题在于计算量大，Policy Evaluation的时候就全部状态空间广度遍历了，然后每一步Policy Improvement更新后又重新计算和更新一次$v(s)$。所以可以用如下的<strong>Value Iteration</strong>的方法来简化运算，同时确保收敛性：<br>$$<br>v_{k+1}(s)=\max_a\mathbb{E}[R_{k+1}+\gamma v_k(S_{k+1})|S_t=s,A_t=a]=\max_a\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]<br>$$</p>
+<p>对比一下$\eqref{eq3:PE}$，$\eqref{eq3:PI_theorem}$以及上式。$\eqref{eq3:PE}$是对$\pi(a|s)$求期望，然后$\eqref{eq3:PI_theorem}$求最大值；而上式直接对$q_k(s,a)$求基于$a$的最大值，将两步迭代合为一步；从另一个角度来理解上式：从上节的最佳策略下状态值函数推导可知$v_\ast(s)=\max \limits_{a} \sum_{s^\prime,r}p(s^\prime,r|s,a)[r+ \gamma v_\ast(s^\prime)]$，我们实际是套用了Policy Evaluation的同样的思路，用k-iteration的方法迭代的求解这个方程，也就是$v_\ast(s)$的DP解法（类似与Policy Evaluation中的$v_\pi(s)$的DP解法）。</p>
+<p>Value Iteration的伪代码如下：</p>
+<blockquote>
+<blockquote>
+<p>Initialize $V(s)\in\mathbb{R}$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
+<blockquote>
+<blockquote>
+<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<blockquote>
+<blockquote>
+<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \max_a\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$<br>until $\Delta &lt; \theta$ (a small positive number)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Output a detterministic policy $\pi\approx\pi^\ast$, such that $\pi(s)=\mathop{argmax} \limits_{a}\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$</p>
+</blockquote>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/12/强化学习漫谈-2-Value/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -801,7 +1000,7 @@ Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

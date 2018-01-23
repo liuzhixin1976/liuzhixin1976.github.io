@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   终于来到了Value与Return的话题。经典的教材都会先定义Return as \begin{equation}G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}\label{eq2:ret_func}\end{e">
+<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
 <meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强化学习漫谈 2: Value">
-<meta property="og:url" content="http://yoursite.com/2018/01/12/强化学习漫谈-2-Value/index.html">
+<meta property="og:title" content="强化学习漫谈 3：DP">
+<meta property="og:url" content="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/index.html">
 <meta property="og:site_name" content="About Reinforcement Learning">
-<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   终于来到了Value与Return的话题。经典的教材都会先定义Return as \begin{equation}G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}\label{eq2:ret_func}\end{e">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-22T03:27:56.408Z">
+<meta property="og:updated_time" content="2018-01-23T09:36:06.176Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="强化学习漫谈 2: Value">
-<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   终于来到了Value与Return的话题。经典的教材都会先定义Return as \begin{equation}G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}\label{eq2:ret_func}\end{e">
+<meta name="twitter:title" content="强化学习漫谈 3：DP">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/12/强化学习漫谈-2-Value/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/"/>
 
 
 
 
 
-  <title>强化学习漫谈 2: Value | About Reinforcement Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>强化学习漫谈 3：DP | About Reinforcement Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/12/强化学习漫谈-2-Value/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="刘志欣">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强化学习漫谈 2: Value</h1>
+          <h1 class="post-title" itemprop="name headline">强化学习漫谈 3：DP</h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T21:46:04+08:00">
-                2018-01-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T10:06:56+08:00">
+                2018-01-23
               </time>
             
 
@@ -326,26 +326,80 @@ MathJax.Hub.Config({
 });
 </script>
 
-<p>终于来到了Value与Return的话题。经典的教材都会先定义Return as</p>
-<p>\begin{equation}<br>G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}<br>\label{eq2:ret_func}<br>\end{equation}</p>
-<p>其中$T=\infty$代表 <em>continuing task</em>, $T&lt;\infty$代表 <em>episodic task</em>, $\gamma$为discount rate，如果为1则表示没有discount。</p>
-<p>但是让我们后退一步，先不要限定Return的定义。这么做有两个原因：</p>
-<blockquote>
-<p>1, $\eqref{eq2:ret_func}$只是可能的Return的一种形式，我们可能会面对其他的Return定义形式；<br>2，Return也不一定是一个标量，也有可能是一个向量。</p>
+<blockquote class="blockquote-center"><p>The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the search for good policies.</p>
 </blockquote>
-<p>所以我们先不要完全限定Return的表现形式，而是做一个合乎直觉也方便我们继续进行下去的假设，可以称之为 <em>独立可加</em> 假设: </p>
-<p>\begin{equation}<br>G_t=R_{t+1}\oplus g(G_{t+1})\label{eq2:gen_G}<br>\end{equation}</p>
-<p>其中$\oplus$满足$\mathbb{E}_{e}(x\oplus y)=\mathbb{E}_e(x)\oplus\mathbb{E}_e(y)$, $\mathbb{E}_e$为对环境反馈$p(s^{\prime},r|s,a)$进行期望计算（<strong>注意</strong>此处$\mathbb{E}_e$与$\mathbb{E}_{\pi}$的区别，$\mathbb{E}_e$是对环境模型进行期望，而$\mathbb{E}_{\pi}$是对策略$\pi$进行统计期望），从这个意义上来说，$\oplus$算子是统计意义上（或者准确的说，统计期望意义上）的线性算子，也就是说，只要统计意义上满足$\mathbb{E}_{e}(x\oplus y)=\mathbb{E}_e(x)\oplus\mathbb{E}_e(y)$，那么$x$和$y$不一定以线性组合的形式表达$G_t$。同样的，我们还假设<br>\begin{equation}<br>\mathbb{E}_e(g(x))=g(\mathbb{E}_e(x))\label{eq2:linear}<br>\end{equation}<br>也就是说$g$也是对$\mathbb{E}_e$统计意义上线性的。</p>
-<p>不难看出，$\eqref{eq2:ret_func}$是$\eqref{eq2:gen_G}$的一种特殊形式。此外还需要注意的是，$G_t$是$t$时刻的Return，但是是从$t+1$时刻的$R_{t+1}$开始的。</p>
-<p>从Return可以定义出Value Function来。对状态$s$的State Value，定义如下：<br>\begin{equation}<br>v_\pi(s)=\mathbb{E}_\pi[G_t|S_t=s] \label{eq2:state_value}<br>\end{equation}<br>对状态、行为对(state-action pair)的value定义如下：<br>\begin{equation}<br>q_\pi(s,a)=\mathbb{E}_\pi[G_t|S_t=s, A_t=a]\label{eq2:pair_value}<br>\end{equation}<br>$v_\pi(s)$与$q_\pi(s,a)$分别表达$t$时刻状态为$S_t=s$或者$t$时刻状态$t$并采取行动$a$的情况下，<strong>如果按照策略$\pi$进行$t+1$开始的后续行为</strong>，其expected return是什么。</p>
-<p>进一步看看$\eqref{eq2:state_value}$在满足假设$\eqref{eq2:gen_G}$的前提下可以写成什么样的迭代(recursive)方式：</p>
-<p>\begin{eqnarray}<br>v_\pi(s)&amp;=&amp;\mathbb{E}_\pi[G_t|S_t=s]\notag\\<br>&amp;=&amp;\sum_a\pi(a|s)\sum_{s^\prime}\sum_r p(s^\prime,r|s,a)[G_t|S_t=s,A_t=a,S_{t+1}=s^\prime,R_{t+1}=r]\notag\\<br>&amp;=&amp;\sum_a\pi(a|s)\mathbb{E}_e[G_t|S_t=s]\notag\\<br>&amp;=&amp;\sum_a\pi(a|s)\mathbb{E}_e[R_{t+1}\oplus g(G_{t+1})]\notag\\<br>&amp;=&amp;\sum_a\pi(a|s)[\mathbb{E}_e(R_{t+1})\oplus g(\mathbb{E}_e(G_{t+1}))]\notag\\<br>&amp;=&amp;\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r\oplus g(v_\pi(s^\prime))]<br>\end{eqnarray}</p>
-<p>如果把$\eqref{eq2:ret_func}$带入，可以很直观的得到<br>\begin{equation}<br>v_\pi(s)=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_\pi(s^\prime)]\label{eq2:bellman}<br>\end{equation}</p>
-<p>上式称为<strong>Bellman公式</strong>。它定义了State Value Function的迭代关系。由于Bellman公式是由$v_\pi(s^\prime)$反推$v_\pi(s)$，且$s^\prime$是$s$的后续状态successor state。所以这种由后续状态successor states来更新当前状态的value函数的做法称为<strong><em>back up</em></strong>。这个是强化学习中一个重要的概念。</p>
-<p>对于策略$\pi$与策略$\pi^\prime$，如果对于任意状态$s$，均存在$v_\pi(s)&gt;v_{\pi^\prime}(s)$，那么称策略$\pi$优于策略$\pi^\prime$。如果存在（无唯一存在约束）策略$\pi^\ast$，使得$\pi^\ast$优于或等同于其他任何策略$\pi$，则称策略$\pi^\ast$为最优策略。</p>
-<p>根据定义，我们可以直观的得到下式：<br>\begin{equation}<br>\pi^\ast = \mathop{argmax} \limits_{\pi} v_\pi(s)\label{eq2:optimal_pi}<br>\end{equation}<br>以及<br>\begin{equation}<br>v_{\pi^\ast}(s) = \max_{\pi} v_\pi(s)\label{eq2:optimal_value}<br>\end{equation}</p>
-<p>同理：<br>\begin{equation}<br>q_{\pi^\ast}(s,a) = \max_{\pi} q_\pi(s,a)\label{eq2:optimal_q}<br>\end{equation}<br>但是上式$\eqref{eq2:optimal_q}$是值得商榷的：我们是寻找最优的$\pi^\ast$使得$q_\pi(s,a)$最大，还是仅仅apply $\eqref{eq2:optimal_pi}$就使$q_{\pi^\ast}(s,a)\ge q_\pi(s,a), \forall \pi,s,a$？我们不妨做如下的推导：因为$v_{\pi^\ast}=\max_{a\in\mathcal{A}}q_{\pi^\ast}(s,a)$，如果存在$\pi^\prime$使得$q_{\pi^\prime}(s,a)&gt;q_{\pi^\ast}(s,a)$，那么$\max_{a\in\mathcal{A}}q_{\pi^\prime}(s,a)&gt;\max_{a\in\mathcal{A}}q_{\pi^\ast}(s,a)$，亦即$v_{\pi^\prime}&gt;v_{\pi^\ast}$，与$\eqref{eq2:optimal_pi}$矛盾。<br>所以$q_{\pi^\ast}(s,a)$完全可以理解为：从后续时刻$t+1$开始，按照$\eqref{eq2:optimal_pi}$定义的$\pi^\ast$进行每一步的决策，就可以得到在时刻$t$，基于状态$S_t=t$与action $A_t=a$的最优$q$值：$q_{\pi^\ast}(s,a)$。</p>
-<p>按此逻辑，可以推导出如下公式：<br>\begin{eqnarray}<br>v_\ast(s)&amp;=&amp;\max \limits_{a\in\mathcal{A}(s)}q_{\pi^\ast}(s,a)\notag\\<br>&amp;=&amp;\max \limits_{a} \mathbb{E}_{\pi^\ast}[G_t|S_t=s, A_t=a]\notag\\<br>&amp;=&amp;\max \limits_{a} \mathbb{E}_e [R_{t+1}\oplus g(v_\ast(S_{t+1}))|S_t=s,A_t=a]\label{eq2:optimal_onestep}\\<br>&amp;=&amp;\max \limits_{a} \sum_{s^\prime,r}p(s^\prime,r|s,a)[r\oplus g(v_\ast(s^\prime))]<br>\end{eqnarray}<br>其中$\eqref{eq2:optimal_onestep}$是因为by applying $\pi^\ast$，我们把$G_t$转化为下一步$t+1$时刻采用$\pi^\ast$的策略情况下得到的$v^\ast(S_{t+1})$的一个递归表达，并对环境反馈$p(s^\prime,r|s,a)$进行Expectation，因此将$\mathbb{E}_{\pi^\ast}$转化为$\mathbb{E}_e$。代入$\eqref{eq2:ret_func}$我们就可以得到传统的表达：<br>\begin{equation}<br>v_\ast(s)=\max \limits_{a} \sum_{s^\prime,r}p(s^\prime,r|s,a)[r+ \gamma v_\ast(s^\prime)]\label{eq2:opt_bellman_v}<br>\end{equation}<br>同样的，我们从$t+1$时刻开始apply $\pi^\ast$，并在$t+1$时刻所有$q_{\pi^\ast}(s,a), \forall a \in \mathcal{A}$中采用最优的$A_{t+1}=a^\prime$，可以得到$q_\ast$的递归表达：<br>\begin{equation}<br>q_\ast(s,a)=\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+ \gamma \max \limits_{a^\prime} q_\ast(s^\prime,a^\prime)]\label{eq2:opt_bellman_q}<br>\end{equation}<br>上面的$\eqref{eq2:opt_bellman_v}$是state value function 的最优Bellman公式，直观上表达的是$t+1$时刻采用最佳策略的情况下可以得到$v_\ast(s^\prime)$的基础上，对时刻$t$的最优state value值$v_\ast(t)$的递归表达，搜索空间在时刻$t$的所有action空间；而$\eqref{eq2:opt_bellman_v}$是q value 的最优Bellman公式，直观上表达的是$t+1$时刻采用最佳策略的情况下可以得到$q_\ast(s^\prime,a^\prime)$的基础上，对所有$t+1$时刻的action空间搜索最佳的$A_{t+1}=a^\prime$得到的时刻$t$上的最优q value $q_\ast(s,a)$。这也是两者$\max$操作在不同的搜索空间的原因。两者的共同之处在于：the value of state/pair under an optimal policy must <strong><em>equal</em></strong> the expected return for the best action from that state/pair。用数学语言说就是：当前状态/pair的最优值，是下一步的最优值在对环境变量$p(s^\prime,r|s,a)$进行expection计算从而达到的递归效应，也就是前面所说的<strong><em>back up</em></strong>。</p>
+<p>Dynamic Programming(DP) 是求解MDP的最优策略的基本方法，虽然不是计算最优，但它是后续一系列方法的基础。</p>
+<h3 id="Policy-Evaluation"><a href="#Policy-Evaluation" class="headerlink" title="Policy Evaluation"></a>Policy Evaluation</h3><p>从Bellman公式$v_\pi(s)=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_\pi(s^\prime)]$出发，如果状态空间有限（有terminate state，或者称为episodic task），并且environment’s dynamic $p(s^\prime,r|s,a)$已知，则可以用求解方程组的方式求出value function。但是显然这么做不是一个好办法。因此我们引入DP，使用迭代(iterative)的方法来估算$v_\pi(s)$。</p>
+<p>$\forall s \in \mathcal{S}$，初始化$v_0(s)$（注意此处简化下标，省略了$\pi$)为任何arbitrary初始值。然后运用下式来迭代计算$v(s)$。这种估算state value的方法称为<strong>policy evaluation</strong>。</p>
+<p>\begin{equation}<br>v_{k+1}(s)=\mathbb{E}_{\pi}[R_{t+1}+\gamma v_k(S_{t+1})|S_t=s]=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]\label{eq3:PE}<br>\end{equation}</p>
+<p>这种迭代的方法是使用每个状态的所有后续状态的value估计值来更新当前状态value的估计值，因此被称为“<strong><em>full backup</em></strong>”。$v_{k+1}(s)$与$v_k(s^\prime)$可以是两个不同的序列，也可以是同一个序列进行原地更新(in place update)。</p>
+<p>使用DP进行policy evaluation的伪代码如下：</p>
+<blockquote>
+<blockquote>
+<p>Input $\pi$, the policy to be evaluated<br>Initialize an array $V(s)=0$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
+<blockquote>
+<blockquote>
+<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<blockquote>
+<blockquote>
+<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$  </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>until $\Delta &lt; \theta$ (a small positive number)<br>Output $V\approx v_\pi$</p>
+</blockquote>
+</blockquote>
+<h3 id="Policy-Improvement"><a href="#Policy-Improvement" class="headerlink" title="Policy Improvement"></a>Policy Improvement</h3><p>求出$v_\pi(s)$或者$q_\pi(s,a)$之后，下一步就是如何改进policy了。我们先从一个简单的场景入手：policy都是deterministic的，也就是$\pi(s)=a$，每一个状态的对应action只有一个唯一的选择。</p>
+<p>假设$\pi$与$\pi^\prime$是两个不同的确定性策略(deterministic policy)，使得$\forall s \in \mathcal{S}$，<br>\begin{equation}<br>q_\pi(s,\pi^\prime(s))\ge q_\pi(s,\pi(s))\label{eq3:PI_theorem}<br>\end{equation}<br>那么$v_{\pi^\prime}(s)\ge v_\pi(s)$。</p>
+<p><em>Note</em>: $\eqref{eq3:PI_theorem}$如何理解？我们要记住$q(s,a)$指的是当前状态$s$并采取行动$a$，然后在<strong>之后</strong>的后续状态采用策略$\pi$。这样就不会混淆表达式中的$\pi$与$\pi^\prime$</p>
+<p><em>证明</em>：<br>因为$\pi$是确定性策略，且$v_\pi(s)=\sum_a \pi(a|s)q_\pi(s,a)$，所以<br>$$<br>q_\pi(s,\pi^\prime(s))\ge v_\pi(s)<br>$$<br>(对于$\pi$是随机性策略也就是存在$\pi(a|s)$分布的情况，同样可得这样的结论。)<br>所以由上式以及Bellman公式$q_\pi(s,a)=\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=a]$，我们可得<br>\begin{eqnarray}<br>v_\pi(s)&amp;\le&amp;q_\pi(s,\pi^\prime(s))\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma v_\pi(S_{t+1})]|S_t=s]\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi^\prime(S_{t+1}))|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma \mathbb{E}_{\pi^\prime}[R_{t+2}+\gamma v_\pi(S_{t+2})]|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\notag\\<br>&amp;…&amp;\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+2}+\gamma^3R_{t+3}+…|S_t=s]\notag\\<br>&amp;=&amp;v_{\pi^\prime}(s)\label{eq3:PI}<br>\end{eqnarray}<br>证毕。</p>
+<p>$\eqref{eq3:PI}$说明了，在满足$\eqref{eq3:PI_theorem}$的情况下（$\eqref{eq3:PI_theorem}$实际是首先对所有状态进行广度搜索），对每一步进行greedy的策略改进，就可以最终得到最优策略$\pi^\ast$。由于最优策略存在，所以每一步的greedy策略改进会收敛到全局最优。为什么呢？因为我们每一步的策略改进都是针对整个状态空间进行了广度搜索的啊。最优策略以及最优策略下的optimal value参见上节。</p>
+<p>如果单步的策略改进存在多个$a^\prime$怎么办？这种情况下$\pi^\prime$是随机分布的策略，其概率分布在多个$a^\prime$上，分布函数待定。。。</p>
+<h3 id="Policy-Iteration-or-Value-Iteration"><a href="#Policy-Iteration-or-Value-Iteration" class="headerlink" title="Policy Iteration or Value Iteration"></a>Policy Iteration or Value Iteration</h3><p>从任意给定policy $\pi_0$出发，迭代进行Policy Evaluation $\eqref{eq3:PE}$与Policy Improvement $\eqref{eq3:PI_theorem}$，就可以得到最佳策略$\pi^\ast$，如下所示：<br>$$<br>\pi_0\stackrel{E}{\longrightarrow}v_{\pi_0}\stackrel{I}{\longrightarrow}\pi_1\stackrel{E}{\longrightarrow}v_{\pi_1}\stackrel{I}{\longrightarrow}\pi_2\stackrel{E}{\longrightarrow}…\stackrel{I}{\longrightarrow}\pi^\ast\stackrel{E}{\longrightarrow}v_\ast<br>$$<br>这一过程称为<strong>Policy Iteration</strong>，伪代码如下：</p>
+<blockquote>
+<blockquote>
+<ol>
+<li>Initialize $V(s)\in\mathbb{R}$, and $\pi(s)\in\mathcal{A}(s)$ $\forall s \in \mathcal{S}^+$</li>
+<li><strong>Policy Evaluation</strong><br>Repeat<blockquote>
+<blockquote>
+<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<blockquote>
+<blockquote>
+<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \sum_{s^\prime,r}p(s^\prime,r|s,\pi(s))[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$<br>until $\Delta &lt; \theta$ (a small positive number)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+<li><strong>Policy Improvement</strong><br>policy_stable$\leftarrow$true<br>For each $s\in\mathcal{S}$:<blockquote>
+<blockquote>
+<p>old_action$\leftarrow\pi(s)$<br>$\pi(s)\leftarrow\mathop{argmax} \limits_{a}\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>if old_action$\neq\pi(s)$, then policy_stable$\leftarrow$false<br>if policy_stable, then stop and return $V\approx v_\ast$, and $\pi\approx\pi^\ast$; else go to 2</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+</blockquote>
+<p>Policy Iteration的问题在于计算量大，Policy Evaluation的时候就全部状态空间广度遍历了，然后每一步Policy Improvement更新后又重新计算和更新一次$v(s)$。所以可以用如下的<strong>Value Iteration</strong>的方法来简化运算，同时确保收敛性：<br>$$<br>v_{k+1}(s)=\max_a\mathbb{E}[R_{k+1}+\gamma v_k(S_{k+1})|S_t=s,A_t=a]=\max_a\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]<br>$$</p>
+<p>对比一下$\eqref{eq3:PE}$，$\eqref{eq3:PI_theorem}$以及上式。$\eqref{eq3:PE}$是对$\pi(a|s)$求期望，然后$\eqref{eq3:PI_theorem}$求最大值；而上式直接对$q_k(s,a)$求基于$a$的最大值，将两步迭代合为一步；从另一个角度来理解上式：从上节的最佳策略下状态值函数推导可知$v_\ast(s)=\max \limits_{a} \sum_{s^\prime,r}p(s^\prime,r|s,a)[r+ \gamma v_\ast(s^\prime)]$，我们实际是套用了Policy Evaluation的同样的思路，用k-iteration的方法迭代的求解这个方程，也就是$v_\ast(s)$的DP解法（类似与Policy Evaluation中的$v_\pi(s)$的DP解法）。</p>
+<p>Value Iteration的伪代码如下：</p>
+<blockquote>
+<blockquote>
+<p>Initialize $V(s)\in\mathbb{R}$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
+<blockquote>
+<blockquote>
+<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<blockquote>
+<blockquote>
+<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \max_a\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$<br>until $\Delta &lt; \theta$ (a small positive number)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Output a detterministic policy $\pi\approx\pi^\ast$, such that $\pi(s)=\mathop{argmax} \limits_{a}\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$</p>
+</blockquote>
+</blockquote>
 
       
     </div>
@@ -376,8 +430,8 @@ MathJax.Hub.Config({
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/11/强化学习漫谈-1-MDP/" rel="next" title="强化学习漫谈 1: MDP">
-                <i class="fa fa-chevron-left"></i> 强化学习漫谈 1: MDP
+              <a href="/2018/01/12/强化学习漫谈-2-Value/" rel="next" title="强化学习漫谈 2: Value">
+                <i class="fa fa-chevron-left"></i> 强化学习漫谈 2: Value
               </a>
             
           </div>
@@ -385,10 +439,6 @@ MathJax.Hub.Config({
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/23/强化学习漫谈-3-DP/" rel="prev" title="强化学习漫谈 3：DP">
-                强化学习漫谈 3：DP <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -440,8 +490,17 @@ MathJax.Hub.Config({
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -492,6 +551,22 @@ MathJax.Hub.Config({
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Evaluation"><span class="nav-number">1.</span> <span class="nav-text">Policy Evaluation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Improvement"><span class="nav-number">2.</span> <span class="nav-text">Policy Improvement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Iteration-or-Value-Iteration"><span class="nav-number">3.</span> <span class="nav-text">Policy Iteration or Value Iteration</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
