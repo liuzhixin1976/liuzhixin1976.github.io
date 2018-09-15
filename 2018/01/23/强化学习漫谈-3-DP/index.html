@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-23T09:36:06.176Z">
+<meta property="og:updated_time" content="2018-09-03T14:04:51.667Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 3：DP">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
@@ -354,7 +354,7 @@ MathJax.Hub.Config({
 <p>假设$\pi$与$\pi^\prime$是两个不同的确定性策略(deterministic policy)，使得$\forall s \in \mathcal{S}$，<br>\begin{equation}<br>q_\pi(s,\pi^\prime(s))\ge q_\pi(s,\pi(s))\label{eq3:PI_theorem}<br>\end{equation}<br>那么$v_{\pi^\prime}(s)\ge v_\pi(s)$。</p>
 <p><em>Note</em>: $\eqref{eq3:PI_theorem}$如何理解？我们要记住$q(s,a)$指的是当前状态$s$并采取行动$a$，然后在<strong>之后</strong>的后续状态采用策略$\pi$。这样就不会混淆表达式中的$\pi$与$\pi^\prime$</p>
 <p><em>证明</em>：<br>因为$\pi$是确定性策略，且$v_\pi(s)=\sum_a \pi(a|s)q_\pi(s,a)$，所以<br>$$<br>q_\pi(s,\pi^\prime(s))\ge v_\pi(s)<br>$$<br>(对于$\pi$是随机性策略也就是存在$\pi(a|s)$分布的情况，同样可得这样的结论。)<br>所以由上式以及Bellman公式$q_\pi(s,a)=\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=a]$，我们可得<br>\begin{eqnarray}<br>v_\pi(s)&amp;\le&amp;q_\pi(s,\pi^\prime(s))\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma v_\pi(S_{t+1})]|S_t=s]\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi^\prime(S_{t+1}))|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma \mathbb{E}_{\pi^\prime}[R_{t+2}+\gamma v_\pi(S_{t+2})]|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\notag\\<br>&amp;…&amp;\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+2}+\gamma^3R_{t+3}+…|S_t=s]\notag\\<br>&amp;=&amp;v_{\pi^\prime}(s)\label{eq3:PI}<br>\end{eqnarray}<br>证毕。</p>
-<p>$\eqref{eq3:PI}$说明了，在满足$\eqref{eq3:PI_theorem}$的情况下（$\eqref{eq3:PI_theorem}$实际是首先对所有状态进行广度搜索），对每一步进行greedy的策略改进，就可以最终得到最优策略$\pi^\ast$。由于最优策略存在，所以每一步的greedy策略改进会收敛到全局最优。为什么呢？因为我们每一步的策略改进都是针对整个状态空间进行了广度搜索的啊。最优策略以及最优策略下的optimal value参见上节。</p>
+<p>$\eqref{eq3:PI}$说明了，在满足$\eqref{eq3:PI_theorem}$的情况下（$\eqref{eq3:PI_theorem}$实际是首先对所有状态进行广度搜索, 因为它意味着，对每个状态，找到当前的更好动作$a^\prime$使得当前动作采用这个值而其后继续沿用策略$\pi$的情况下，$v(s)$更大，进而把所有这些$a^\prime$组合为新的最优策略$\pi^\ast$），对每一步进行greedy的策略改进，就可以最终得到最优策略$\pi^\ast$。由于最优策略存在，所以每一步的greedy策略改进会收敛到全局最优。为什么呢？因为我们每一步的策略改进都是针对整个状态空间进行了广度搜索的啊。最优策略以及最优策略下的optimal value参见上节。</p>
 <p>如果单步的策略改进存在多个$a^\prime$怎么办？这种情况下$\pi^\prime$是随机分布的策略，其概率分布在多个$a^\prime$上，分布函数待定。。。</p>
 <h3 id="Policy-Iteration-or-Value-Iteration"><a href="#Policy-Iteration-or-Value-Iteration" class="headerlink" title="Policy Iteration or Value Iteration"></a>Policy Iteration or Value Iteration</h3><p>从任意给定policy $\pi_0$出发，迭代进行Policy Evaluation $\eqref{eq3:PE}$与Policy Improvement $\eqref{eq3:PI_theorem}$，就可以得到最佳策略$\pi^\ast$，如下所示：<br>$$<br>\pi_0\stackrel{E}{\longrightarrow}v_{\pi_0}\stackrel{I}{\longrightarrow}\pi_1\stackrel{E}{\longrightarrow}v_{\pi_1}\stackrel{I}{\longrightarrow}\pi_2\stackrel{E}{\longrightarrow}…\stackrel{I}{\longrightarrow}\pi^\ast\stackrel{E}{\longrightarrow}v_\ast<br>$$<br>这一过程称为<strong>Policy Iteration</strong>，伪代码如下：</p>
 <blockquote>
@@ -440,6 +440,10 @@ MathJax.Hub.Config({
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/" rel="prev" title="强化学习漫谈 4: 蒙特卡洛法">
+                强化学习漫谈 4: 蒙特卡洛法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -515,7 +519,7 @@ MathJax.Hub.Config({
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
