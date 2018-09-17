@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="Monte Carlo Prediction/EstimationDP很好很强大，然而DP需要环境的完整知识$p(s^\prime, r|s,a)$，在很多实际场景中这个变量是未知或者至少不完全已知的，因此要求我们有别的办法来估算值函数，并进一步进行策略的优化。考虑到值函数的定义是一个数学期望，在概率分布未知的情况下进行数学期望的估算，最经典最直接的办法就是Monte-Carlo法：进行充足的实验">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-15T17:09:57.238Z">
+<meta property="og:updated_time" content="2018-09-17T06:47:39.311Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 4: 蒙特卡洛法">
 <meta name="twitter:description" content="Monte Carlo Prediction/EstimationDP很好很强大，然而DP需要环境的完整知识$p(s^\prime, r|s,a)$，在很多实际场景中这个变量是未知或者至少不完全已知的，因此要求我们有别的办法来估算值函数，并进一步进行策略的优化。考虑到值函数的定义是一个数学期望，在概率分布未知的情况下进行数学期望的估算，最经典最直接的办法就是Monte-Carlo法：进行充足的实验">
@@ -389,7 +389,7 @@
 </blockquote>
 </blockquote>
 <p>按照这种方法，$q(s,a)$ for all pair $(s,a)$是可达的（explorable），但是如何证明$\epsilon$-greedy的方法选出来的策略$\pi$是最优策略呢？假设存在$\pi^\prime$，对于所有的 $s\in\mathcal{S}$，$q_\pi(s, \pi^\prime(s))\ge v_\pi(s)$, 那么根据上一章的policy improvement theorem，$\pi^\prime\ge\pi$(i.e. 对于所有的 $s\in\mathcal{S}$, $v_{\pi^\prime}(s)\ge v_\pi(s)$)，从而最终可达到最优策略$\pi^\ast$。</p>
-<p>好吧，下面就是需要证明通过$\epsilon$-greedy选出来的$\pi^\prime$，对于所有的$s$都有 $q_\pi(s, \pi^\prime(s)\ge v_\pi(s)$:</p>
+<p>好吧，下面就是需要证明通过$\epsilon$-greedy选出来的$\pi^\prime$，对于所有的$s$都有 $q_\pi(s, \pi^\prime(s))\ge v_\pi(s)$:</p>
 <p>\begin{eqnarray}<br>q_\pi(s, \pi^\prime(s))&amp;=&amp;\sum_a\pi^\prime(a|s)q_\pi(s,a)\notag\\<br>&amp;=&amp;\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)+(1-\epsilon)\max_a q_\pi(s,a)\notag\\<br>&amp;\ge&amp;\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)+(1-\epsilon)\sum_a\frac{\pi(a|s)-\frac{\epsilon}{|\mathcal{A}(s)|}}{1-\epsilon}q_\pi(s,a)\notag\\<br>&amp;=&amp;\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)-\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)+\sum_a\pi(a|s)q_\pi(s,a)\notag\\<br>&amp;=&amp;v_\pi(s)<br>\end{eqnarray}<br>上面推导中，第一个等式来自于概率期待值的展开（对每个概率为$\pi^\prime(a|s)$的$a$计算$q_\pi(s,a)$的概率期望值）；第二个等式来自于$\epsilon$-greedy的policy improvement过程；第三个大于等于来自：max总会比某一种概率分布的均值大，而$\frac{\pi(a|s)-\frac{\epsilon}{|\mathcal{A}(s)|}}{1-\epsilon}$恰好是一种概率分布（总和为1）。</p>
 <p>通过上面的推导证明了，按照$\epsilon$-greedy的方式improve policy，最终可以得到最佳策略。</p>
 <h3 id="Off-Policy-Prediction-and-Control"><a href="#Off-Policy-Prediction-and-Control" class="headerlink" title="Off-Policy Prediction and Control"></a>Off-Policy Prediction and Control</h3><p>所谓off-policy prediction，就是指我们在一套policy $\mu$上面生成行为（称为$\textit{behavior policy}$），在另一套policy $\pi$上面学习value（称为$\textit{target policy}$）。为什么要研究这种可能性呢？因为在On-Policy的方法中，为了exploration（探索所有$s,a$对的$q$值），我们采用了$\epsilon$-greedy的方法让policy更加soft一些。然而问题在于非greedy的这部分选择概率始终比较小，exploration的覆盖是缓慢的；同时这种soft的方式始终是比较固定的，缺乏灵活性。所以我们希望有一种方法，在更加灵活的soft的策略集(behavior policy $\mu$)上进行生产行为从而覆盖所有的$s,a$对，同时在寻找相对确定(deterministic)的最佳策略(target policy $\pi$)，并学习$\pi$上的$q$值。</p>
@@ -404,8 +404,8 @@
 <p>\begin{equation}<br>V(s)=\frac{\sum_{t\in\mathcal{T}(s)}\rho_t^{T(t)}G_t}{\sum_{t\in\mathcal{T}(s)}\rho_t^{T(t)}}\label{eqn_wis}<br>\end{equation}</p>
 <p>上面的(\ref{eqn_ois})称为$\textit{ordinary importance sampling}$，(\ref{eqn_wis})称为$\textit{weighted importance sampling}$。一个简单的评价如下（请自行证明）：ordinary importance sampling 是无偏的(unbiased)，但是方差variance是无界的(unbounded)；反之weighted importance sampling的有偏的(biased)，但是方差variance是有界的，且通常较小。在实际工作中，通常会使用weighted importance sampling。</p>
 <p>在计算了value值后，就可以根据greedy的方法来improve policy了。不再详述。</p>
-<p>同时可以容易证得：对于加权平均(weighted sampling)，即<br>\begin{equation}<br>V_n=\frac{\sum_{k=1}^{n-1}W_kG_k}{\sum_{k=1}^{n-1}W_k}\notag<br>\end{equation}<br>那么有一个增量计算方法(Incremental update):<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\label{eqn_incremental}<br>\end{equation}<br>其中$C_{n+1}=C_n+W_{n+1}$。<br>如上的Incremental Update (\ref{eqn_incremental})是有更多的意义，这一点将在下一章中继续讨论。</p>
-<p>最后讲一点Retuen-Specific Importance Sampling：如果我们仔细看(\ref{eqn_isr})，会有一个不和谐的发现：$\rho$是从当前时刻$t$直到episode termination $T$，这个ratio是每个subsequence step $k$的$\pi_k/\mu_k$的相乘，每个subsequence step是无差别的；反之，return值是从当前时刻$k$直到episode termination $T$的有discounting 的积累，如果discounting ratio $\lambda=0$，那么return值只与当前时刻$t$有关，但是$\rho$依然与从$t$到$T$的每一个subsequence step有关。所以说，importance sampling ratio其实是没有考虑discounting这个因素的。</p>
+<p>同时可以容易证得：对于加权平均(weighted sampling)，即<br>\begin{equation}<br>V_n=\frac{\sum_{k=1}^{n-1}W_kG_k}{\sum_{k=1}^{n-1}W_k}\notag<br>\end{equation}<br>可以有一个增量计算方法(Incremental update):<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\label{eqn_incremental}<br>\end{equation}<br>其中$C_{n+1}=C_n+W_{n+1}$。<br>如上的Incremental Update (\ref{eqn_incremental})是有更多的意义，这一点将在下一章中继续讨论。</p>
+<p>最后讲一点Return-Specific Importance Sampling：如果我们仔细看(\ref{eqn_isr})，会有一个不和谐的发现：$\rho$是从当前时刻$t$直到episode termination $T$，这个ratio是每个subsequence step $k$的$\pi_k/\mu_k$的相乘，每个subsequence step是无差别的；反之，return值是从当前时刻$k$直到episode termination $T$的有discounting 的积累，如果discounting ratio $\lambda=0$，那么return值只与当前时刻$t$有关，但是$\rho$依然与从$t$到$T$的每一个subsequence step有关。所以说，importance sampling ratio其实是没有考虑discounting这个因素的。</p>
 <p>解决办法这里不再详述，可以参考Sutton那本书的5.8节。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之，Monte Carlo方法是不需要知道环境的显示表达$p(s^\prime,r|s,a)$的，只需要环境生成样本就可以。正因为不知道$p(s^\prime,r|s,a)$，所以improve policy的时候，要基于$q(s,a)$而不是基于$v(s)$。而计算$q(s,a)$的时候，所有$(s,a)$对的exploration就成为一个重要的设计考虑。对此解决的方法有三个：exploring starts（每次episode开始状态为一个随机($s,a$)对，假设所有$(s,a)$对是可以被访问的）；$\epsilon$-greedy的方法；以及off-policy的方法，生成样本的方式更加灵活。</p>
 <p>最后，Monte-Carlo方法对于$v(s)$或者$q(s,a)$的更新是不需要知道subsequence state value $v(s^\prime)$或者$q(s^\prime,a)$的，或者说，Monte Carlo法不是bootstraping的。</p>
@@ -450,6 +450,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/17/强化学习漫谈-5-TD/" rel="prev" title="强化学习漫谈 5：One-Step, Tabular, Model-Free TD">
+                强化学习漫谈 5：One-Step, Tabular, Model-Free TD <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -526,7 +530,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

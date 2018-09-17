@@ -249,6 +249,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/17/强化学习漫谈-5-TD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="刘志欣">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="About Reinforcement Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/17/强化学习漫谈-5-TD/" itemprop="url">强化学习漫谈 5：One-Step, Tabular, Model-Free TD</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-17T14:32:00+08:00">
+                2018-09-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<blockquote class="blockquote-center"><p>They are general methods for learning to make long-term predictions about dynamical systems</p>
+</blockquote>
+<p>简化，再简化。</p>
+<h3 id="Policy-Prediction-Using-TD"><a href="#Policy-Prediction-Using-TD" class="headerlink" title="Policy Prediction Using TD"></a>Policy Prediction Using TD</h3><p>对于在线更新的本质，如果我们希望$x$最终达到$\mathcal{X}$, 那么每一轮的在线更新是：$x_{k+1}=x_k+\alpha(\mathcal{X}-x_k)$，其中$\alpha$为learning rate。对应到上一章的Monte-Carlo法，我们有在线更新的公式（上一章公式5）：<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\notag<br>\end{equation}<br>或者写成update的方式：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[G_t-V(S_t)]\notag<br>\end{equation}<br>说明我们希望$V(S_t)$向$G_t$的目标逐步靠近。为什么要以$G_t$为目标呢？</p>
+<p>让我们回到value定义的本源：<br>\begin{eqnarray}<br>v_\pi(s)&amp;=&amp;\mathbb{E}_\pi[G_t|S_t=s]\label{eqn_MC_5}\\<br>&amp;=&amp;\mathbb{E}_\pi[\sum_{k=0}^\infty \gamma^k R_{t+k+1}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{t+1}+\gamma\sum_{k=0}^\infty \gamma^k R_{t+k+2}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{k+1}+\gamma v_\pi(S_{t+1})|S_t=s]\label{eqn_DP_5}<br>\end{eqnarray}</p>
+<p>因为Monte Carlo法不知道environment dynamic $p(s^\prime, r|s,a)$，所以采用episode-wise的实验(experience)平均的方法，用平均的（或者加权平均的）$G_t$来估计/代替(\ref{eqn_MC_5})中的$\mathbb{E}_\pi[G_t|S_t=s]$。同样，(\ref{eqn_DP_5})则代表了DP的思想：bootstrap and expectation。</p>
+<p>这两种做法（MC and DP）都是计算量很大的。如何简化？TD(0)给出的思路是：以$R_{t+1}+\gamma V(S_{t+1})$来估计（双重近似）$\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]$。双重近似来自于：1. 用一个采样点的值来近似期望；2. 用$V(S_{t+1})$来近似$v_\pi(S_{t+1})$。这样，以$R_{t+1}+\gamma V(S_{t+1})$为逼近的目标，每一步就是一个在线差分更新：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]\label{eqn_TD_5}<br>\end{equation}</p>
+<p>这样的好处在于快，计算量很小。那么如何进行偏差分析呢？</p>
+<p>定义TD error 为每一步的差分：$\delta_t=R_{t+1}+\gamma V(S_{t+1})-V(S_t)$, 那么Monte-Carlo偏差为：<br>\begin{eqnarray}<br>G_t-V(S_t)&amp;=&amp;R_{t+1}+\gamma G_{t+1} - V(S_t)+\gamma V(S_{t+1}) - \gamma V(S_{t+1})\notag\\<br>&amp;=&amp;\delta_t+\gamma(G_{t+1}-V_{t+1})\notag\\<br>&amp;=&amp;\delta_t+\gamma\delta_{t+1}+\gamma^2(G_{t+2}-V_{t+2})\notag\\<br>&amp;=&amp;\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}+…+\gamma^{T-t-1}\delta_{T-t-1}+\gamma^{T-t}(G_T-V(S_T))\notag\\<br>&amp;=&amp;\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}+…+\gamma^{T-t-1}\delta_{T-t-1}+\gamma^{T-t}(0-0)\notag\\<br>&amp;=&amp;\sum_{k=0}^{T-t-1}\gamma^k\delta_{t+k}<br>\end{eqnarray}<br>上式倒数第二行来自于如下设定：termination state的value为0。</p>
+<p>有了TD的方法做Policy Prediction，接下来我们看看如何用TD做Policy Control(或者称为Policy Improvement)。</p>
+<h3 id="Policy-Control-Using-TD"><a href="#Policy-Control-Using-TD" class="headerlink" title="Policy Control Using TD"></a>Policy Control Using TD</h3><p>在(\ref{eqn_TD_5})的基础上如何做policy control呢？与Monte-Carlo法类似的，如果我们假设不知道environment dynamic $p(s^\prime,r|s,a)$的显示表达，那么Policy Control 应该基于$q(s,a)$来做会更加直接和直观。由于需要考虑$(s,a)$对，于是有了如下三种不同的在线差分更新的方法：</p>
+<h4 id="1-Sarsa"><a href="#1-Sarsa" class="headerlink" title="1. Sarsa"></a>1. Sarsa</h4><p>简单上公式：<br>\begin{equation}<br>Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha[R_{t+1}+\gamma Q(S_{t+1}, A_{t+1})-Q(S_t,A_t)]<br>\end{equation}<br>其中最tricky的是$A_{t+1}$的选择。通常的做法是：保持Sarsa的on-policy属性，也就是从$\pi(a|S_t=s)$中选取$a$。如果策略$\pi$是deterministic的，那么$a$是个唯一值，无歧义；如果策略$\pi$是soft的，通常的做法是采用$\epsilon$-greedy的方法来同步进行Policy Control。伪代码如下。</p>
+<blockquote>
+<blockquote>
+<p>Initialize $Q(s,a), \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$, arbitrarily, and $Q(terminal-state, .)=0$<br>Repeat (for each episode):</p>
+<blockquote>
+<blockquote>
+<p>Initialize $S$<br>Choose $A$ from $S$ using policy derived from $Q$ (e.g., $\epsilon$-greedy<br>Repeat (for each step of episode):</p>
+<blockquote>
+<blockquote>
+<p>Take action $A$, observe $R, S^\prime$<br>Choose $A^\prime$ from $S^\prime$ using policy derived from $Q$ (e.g. $\epsilon$-greedy)<br>$Q(S,A)\leftarrow Q(S,A)+\alpha[R+\gamma Q(S^\prime, A^\prime)-Q(S,A)]$<br>$S\leftarrow S^\prime, A\leftarrow A^\prime$</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Until $S$ is terminal</p>
+</blockquote>
+</blockquote>
+<h4 id="2-Off-Policy-Q-Learning"><a href="#2-Off-Policy-Q-Learning" class="headerlink" title="2. Off-Policy Q Learning"></a>2. Off-Policy Q Learning</h4><p>简单上公式：<br>\begin{equation}<br>Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \max_a Q(S_{t+1}, a)-Q(S_t,A_t)]<br>\end{equation}<br>其中$A_{t+1}$的选择，不再拘泥于策略$\pi(a|S_t=s)$，而是在所有action中选择当前最优的，这样behavior policy和target policy就不同，所以是off-policy的方法；好处在于，更加直接的针对最优$q^\ast$进行逼近。伪代码如下。</p>
+<blockquote>
+<blockquote>
+<p>Initialize $Q(s,a), \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$, arbitrarily, and $Q(terminal-state, .)=0$<br>Repeat (for each episode):</p>
+<blockquote>
+<blockquote>
+<p>Initialize $S$<br>Choose $A$ from $S$ using policy derived from $Q$ (e.g., $\epsilon$-greedy<br>Repeat (for each step of episode):</p>
+<blockquote>
+<blockquote>
+<p>Take action $A$, observe $R, S^\prime$<br>$Q(S,A)\leftarrow Q(S,A)+\alpha[R+\gamma \max_a Q(S^\prime, a)-Q(S,A)]$<br>$S\leftarrow S^\prime$</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Until $S$ is terminal</p>
+</blockquote>
+</blockquote>
+<h4 id="3-Expected-Sarsa"><a href="#3-Expected-Sarsa" class="headerlink" title="3. Expected Sarsa"></a>3. Expected Sarsa</h4><p>简单上公式：<br>\begin{eqnarray}<br>Q(S_t,A_t)&amp;\leftarrow &amp; Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \mathbb{E} [Q(S_{t+1}, A_{t+1})|S_{t+1}]-Q(S_t,A_t)]\notag\\<br>&amp;\leftarrow &amp; Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \sum_a \pi(a|S_{t+1})Q(S_{t+1}, a)-Q(S_t,A_t)]<br>\end{eqnarray}</p>
+<p>如果expectation $\mathbb{E}$ 依然follow 策略$\pi$，如上式第二行所言，那么Expected Sarsa是on-policy的，它相比一般的Sarsa的优点在于：考虑了$\pi$的概率分布本身，减少了选择$A_{t+1}$的随机性；如果expectation $\mathbb{E}$ 采用了其他的策略分布$\mu$，它的策略可以更灵活，但是需要注意importance sampling ratio的问题，可以表达如下式：<br>\begin{equation}<br>Q(S_t,A_t)\leftarrow  Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \sum_a \mu(a|S_{t+1})\rho Q(S_{t+1}, a)-Q(S_t,A_t)]<br>\end{equation}</p>
+<p>因为Expected Sarsa相比Sarsa减少了$A_{t+1}$选择中的随机性，所以性能，特别是Asymptotic性能会好很多；但是如何比较Sarsa与Q learning呢？Sutton的书上给了一个Cliff Walking的例子来说明Q Learning的风险在于每次都在最优$q^\ast$那里做$\epsilon$-greedy，但是个人认为这个例子比较极端，因为这个例子中，最优策略附近稍微$\epsilon$一下就会进入bad case，这样的分布不具备代表性。（难道要每次都在违法的边缘试探？）</p>
+<h4 id="4-Double-Q-Learning"><a href="#4-Double-Q-Learning" class="headerlink" title="4. Double Q Learning"></a>4. Double Q Learning</h4><p>上述的policy control共同面对的问题是，使用未收敛过程中的极值来作为极值的估计(a maximum over estimated values is used implicitly as an estimate of the maximum value)。如何解？将estimate与maximum解耦开，分别用两个$Q$序列来代表。公式如下：<br>\begin{equation}<br>Q_1(S_t,A_t)\leftarrow Q_1(S_t,A_t)+\alpha[R_{t+1}+\gamma Q_2(S_{t+1}, \mathop{argmax}_a Q_1(S_{t+1}, a))-Q_1(S_t,A_t)]<br>\end{equation}</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>TD方法兼顾了DP的优点(Bootstrap，这样不需要等到episode terminated才能迭代更新)，与Monte-Carlo的优点(model-free, 不需要知道environment dynamic $p(s^\prime, r|s,a)$)。实际运用可以很灵活。因为这里考虑model-free, 所以policy control都是基于$q(s,a)$来进行的，这样每次的$A_{t+1}$选择方式就很tricky，由此衍生出三种方法：Sarsa（完全on-policy，每次$A_{t+1}$根据$\epsilon$-greedy的方法从现有策略$\pi$中选择）；Q Learning (完全off-policy，每次$A_{t+1}$选取当前最优$q^\ast$)；Estimated Sarsa (不再随机选取$A_{t+1}$，而是考虑到策略带来的随机分布，可以on-policy也可以off-policy)。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/04/强化学习漫谈-4-蒙特卡洛法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -389,7 +564,7 @@
 </blockquote>
 </blockquote>
 <p>按照这种方法，$q(s,a)$ for all pair $(s,a)$是可达的（explorable），但是如何证明$\epsilon$-greedy的方法选出来的策略$\pi$是最优策略呢？假设存在$\pi^\prime$，对于所有的 $s\in\mathcal{S}$，$q_\pi(s, \pi^\prime(s))\ge v_\pi(s)$, 那么根据上一章的policy improvement theorem，$\pi^\prime\ge\pi$(i.e. 对于所有的 $s\in\mathcal{S}$, $v_{\pi^\prime}(s)\ge v_\pi(s)$)，从而最终可达到最优策略$\pi^\ast$。</p>
-<p>好吧，下面就是需要证明通过$\epsilon$-greedy选出来的$\pi^\prime$，对于所有的$s$都有 $q_\pi(s, \pi^\prime(s)\ge v_\pi(s)$:</p>
+<p>好吧，下面就是需要证明通过$\epsilon$-greedy选出来的$\pi^\prime$，对于所有的$s$都有 $q_\pi(s, \pi^\prime(s))\ge v_\pi(s)$:</p>
 <p>\begin{eqnarray}<br>q_\pi(s, \pi^\prime(s))&amp;=&amp;\sum_a\pi^\prime(a|s)q_\pi(s,a)\notag\\<br>&amp;=&amp;\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)+(1-\epsilon)\max_a q_\pi(s,a)\notag\\<br>&amp;\ge&amp;\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)+(1-\epsilon)\sum_a\frac{\pi(a|s)-\frac{\epsilon}{|\mathcal{A}(s)|}}{1-\epsilon}q_\pi(s,a)\notag\\<br>&amp;=&amp;\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)-\frac{\epsilon}{|\mathcal{A}(s)|}\sum_a q_\pi(s,a)+\sum_a\pi(a|s)q_\pi(s,a)\notag\\<br>&amp;=&amp;v_\pi(s)<br>\end{eqnarray}<br>上面推导中，第一个等式来自于概率期待值的展开（对每个概率为$\pi^\prime(a|s)$的$a$计算$q_\pi(s,a)$的概率期望值）；第二个等式来自于$\epsilon$-greedy的policy improvement过程；第三个大于等于来自：max总会比某一种概率分布的均值大，而$\frac{\pi(a|s)-\frac{\epsilon}{|\mathcal{A}(s)|}}{1-\epsilon}$恰好是一种概率分布（总和为1）。</p>
 <p>通过上面的推导证明了，按照$\epsilon$-greedy的方式improve policy，最终可以得到最佳策略。</p>
 <h3 id="Off-Policy-Prediction-and-Control"><a href="#Off-Policy-Prediction-and-Control" class="headerlink" title="Off-Policy Prediction and Control"></a>Off-Policy Prediction and Control</h3><p>所谓off-policy prediction，就是指我们在一套policy $\mu$上面生成行为（称为$\textit{behavior policy}$），在另一套policy $\pi$上面学习value（称为$\textit{target policy}$）。为什么要研究这种可能性呢？因为在On-Policy的方法中，为了exploration（探索所有$s,a$对的$q$值），我们采用了$\epsilon$-greedy的方法让policy更加soft一些。然而问题在于非greedy的这部分选择概率始终比较小，exploration的覆盖是缓慢的；同时这种soft的方式始终是比较固定的，缺乏灵活性。所以我们希望有一种方法，在更加灵活的soft的策略集(behavior policy $\mu$)上进行生产行为从而覆盖所有的$s,a$对，同时在寻找相对确定(deterministic)的最佳策略(target policy $\pi$)，并学习$\pi$上的$q$值。</p>
@@ -404,8 +579,8 @@
 <p>\begin{equation}<br>V(s)=\frac{\sum_{t\in\mathcal{T}(s)}\rho_t^{T(t)}G_t}{\sum_{t\in\mathcal{T}(s)}\rho_t^{T(t)}}\label{eqn_wis}<br>\end{equation}</p>
 <p>上面的(\ref{eqn_ois})称为$\textit{ordinary importance sampling}$，(\ref{eqn_wis})称为$\textit{weighted importance sampling}$。一个简单的评价如下（请自行证明）：ordinary importance sampling 是无偏的(unbiased)，但是方差variance是无界的(unbounded)；反之weighted importance sampling的有偏的(biased)，但是方差variance是有界的，且通常较小。在实际工作中，通常会使用weighted importance sampling。</p>
 <p>在计算了value值后，就可以根据greedy的方法来improve policy了。不再详述。</p>
-<p>同时可以容易证得：对于加权平均(weighted sampling)，即<br>\begin{equation}<br>V_n=\frac{\sum_{k=1}^{n-1}W_kG_k}{\sum_{k=1}^{n-1}W_k}\notag<br>\end{equation}<br>那么有一个增量计算方法(Incremental update):<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\label{eqn_incremental}<br>\end{equation}<br>其中$C_{n+1}=C_n+W_{n+1}$。<br>如上的Incremental Update (\ref{eqn_incremental})是有更多的意义，这一点将在下一章中继续讨论。</p>
-<p>最后讲一点Retuen-Specific Importance Sampling：如果我们仔细看(\ref{eqn_isr})，会有一个不和谐的发现：$\rho$是从当前时刻$t$直到episode termination $T$，这个ratio是每个subsequence step $k$的$\pi_k/\mu_k$的相乘，每个subsequence step是无差别的；反之，return值是从当前时刻$k$直到episode termination $T$的有discounting 的积累，如果discounting ratio $\lambda=0$，那么return值只与当前时刻$t$有关，但是$\rho$依然与从$t$到$T$的每一个subsequence step有关。所以说，importance sampling ratio其实是没有考虑discounting这个因素的。</p>
+<p>同时可以容易证得：对于加权平均(weighted sampling)，即<br>\begin{equation}<br>V_n=\frac{\sum_{k=1}^{n-1}W_kG_k}{\sum_{k=1}^{n-1}W_k}\notag<br>\end{equation}<br>可以有一个增量计算方法(Incremental update):<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\label{eqn_incremental}<br>\end{equation}<br>其中$C_{n+1}=C_n+W_{n+1}$。<br>如上的Incremental Update (\ref{eqn_incremental})是有更多的意义，这一点将在下一章中继续讨论。</p>
+<p>最后讲一点Return-Specific Importance Sampling：如果我们仔细看(\ref{eqn_isr})，会有一个不和谐的发现：$\rho$是从当前时刻$t$直到episode termination $T$，这个ratio是每个subsequence step $k$的$\pi_k/\mu_k$的相乘，每个subsequence step是无差别的；反之，return值是从当前时刻$k$直到episode termination $T$的有discounting 的积累，如果discounting ratio $\lambda=0$，那么return值只与当前时刻$t$有关，但是$\rho$依然与从$t$到$T$的每一个subsequence step有关。所以说，importance sampling ratio其实是没有考虑discounting这个因素的。</p>
 <p>解决办法这里不再详述，可以参考Sutton那本书的5.8节。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之，Monte Carlo方法是不需要知道环境的显示表达$p(s^\prime,r|s,a)$的，只需要环境生成样本就可以。正因为不知道$p(s^\prime,r|s,a)$，所以improve policy的时候，要基于$q(s,a)$而不是基于$v(s)$。而计算$q(s,a)$的时候，所有$(s,a)$对的exploration就成为一个重要的设计考虑。对此解决的方法有三个：exploring starts（每次episode开始状态为一个随机($s,a$)对，假设所有$(s,a)$对是可以被访问的）；$\epsilon$-greedy的方法；以及off-policy的方法，生成样本的方式更加灵活。</p>
 <p>最后，Monte-Carlo方法对于$v(s)$或者$q(s,a)$的更新是不需要知道subsequence state value $v(s^\prime)$或者$q(s^\prime,a)$的，或者说，Monte Carlo法不是bootstraping的。</p>
@@ -1210,7 +1385,7 @@ Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

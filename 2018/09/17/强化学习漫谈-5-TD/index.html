@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
+<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   They are general methods for learning to make long-term predictions about dynamical systems  简化，再简化。 Policy Prediction Usi">
 <meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强化学习漫谈 3：DP">
-<meta property="og:url" content="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/index.html">
+<meta property="og:title" content="强化学习漫谈 5：One-Step, Tabular, Model-Free TD">
+<meta property="og:url" content="http://yoursite.com/2018/09/17/强化学习漫谈-5-TD/index.html">
 <meta property="og:site_name" content="About Reinforcement Learning">
-<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   They are general methods for learning to make long-term predictions about dynamical systems  简化，再简化。 Policy Prediction Usi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-03T14:04:51.667Z">
+<meta property="og:updated_time" content="2018-09-17T08:52:42.550Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="强化学习漫谈 3：DP">
-<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
+<meta name="twitter:title" content="强化学习漫谈 5：One-Step, Tabular, Model-Free TD">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   They are general methods for learning to make long-term predictions about dynamical systems  简化，再简化。 Policy Prediction Usi">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/09/17/强化学习漫谈-5-TD/"/>
 
 
 
 
 
-  <title>强化学习漫谈 3：DP | About Reinforcement Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>强化学习漫谈 5：One-Step, Tabular, Model-Free TD | About Reinforcement Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/17/强化学习漫谈-5-TD/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="刘志欣">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强化学习漫谈 3：DP</h1>
+          <h1 class="post-title" itemprop="name headline">强化学习漫谈 5：One-Step, Tabular, Model-Free TD</h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T10:06:56+08:00">
-                2018-01-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-17T14:32:00+08:00">
+                2018-09-17
               </time>
             
 
@@ -326,80 +326,56 @@ MathJax.Hub.Config({
 });
 </script>
 
-<blockquote class="blockquote-center"><p>The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the search for good policies.</p>
+<blockquote class="blockquote-center"><p>They are general methods for learning to make long-term predictions about dynamical systems</p>
 </blockquote>
-<p>Dynamic Programming(DP) 是求解MDP的最优策略的基本方法，虽然不是计算最优，但它是后续一系列方法的基础。</p>
-<h3 id="Policy-Evaluation"><a href="#Policy-Evaluation" class="headerlink" title="Policy Evaluation"></a>Policy Evaluation</h3><p>从Bellman公式$v_\pi(s)=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_\pi(s^\prime)]$出发，如果状态空间有限（有terminate state，或者称为episodic task），并且environment’s dynamic $p(s^\prime,r|s,a)$已知，则可以用求解方程组的方式求出value function。但是显然这么做不是一个好办法。因此我们引入DP，使用迭代(iterative)的方法来估算$v_\pi(s)$。</p>
-<p>$\forall s \in \mathcal{S}$，初始化$v_0(s)$（注意此处简化下标，省略了$\pi$)为任何arbitrary初始值。然后运用下式来迭代计算$v(s)$。这种估算state value的方法称为<strong>policy evaluation</strong>。</p>
-<p>\begin{equation}<br>v_{k+1}(s)=\mathbb{E}_{\pi}[R_{t+1}+\gamma v_k(S_{t+1})|S_t=s]=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]\label{eq3:PE}<br>\end{equation}</p>
-<p>这种迭代的方法是使用每个状态的所有后续状态的value估计值来更新当前状态value的估计值，因此被称为“<strong><em>full backup</em></strong>”。$v_{k+1}(s)$与$v_k(s^\prime)$可以是两个不同的序列，也可以是同一个序列进行原地更新(in place update)。</p>
-<p>使用DP进行policy evaluation的伪代码如下：</p>
+<p>简化，再简化。</p>
+<h3 id="Policy-Prediction-Using-TD"><a href="#Policy-Prediction-Using-TD" class="headerlink" title="Policy Prediction Using TD"></a>Policy Prediction Using TD</h3><p>对于在线更新的本质，如果我们希望$x$最终达到$\mathcal{X}$, 那么每一轮的在线更新是：$x_{k+1}=x_k+\alpha(\mathcal{X}-x_k)$，其中$\alpha$为learning rate。对应到上一章的Monte-Carlo法，我们有在线更新的公式（上一章公式5）：<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\notag<br>\end{equation}<br>或者写成update的方式：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[G_t-V(S_t)]\notag<br>\end{equation}<br>说明我们希望$V(S_t)$向$G_t$的目标逐步靠近。为什么要以$G_t$为目标呢？</p>
+<p>让我们回到value定义的本源：<br>\begin{eqnarray}<br>v_\pi(s)&amp;=&amp;\mathbb{E}_\pi[G_t|S_t=s]\label{eqn_MC_5}\\<br>&amp;=&amp;\mathbb{E}_\pi[\sum_{k=0}^\infty \gamma^k R_{t+k+1}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{t+1}+\gamma\sum_{k=0}^\infty \gamma^k R_{t+k+2}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{k+1}+\gamma v_\pi(S_{t+1})|S_t=s]\label{eqn_DP_5}<br>\end{eqnarray}</p>
+<p>因为Monte Carlo法不知道environment dynamic $p(s^\prime, r|s,a)$，所以采用episode-wise的实验(experience)平均的方法，用平均的（或者加权平均的）$G_t$来估计/代替(\ref{eqn_MC_5})中的$\mathbb{E}_\pi[G_t|S_t=s]$。同样，(\ref{eqn_DP_5})则代表了DP的思想：bootstrap and expectation。</p>
+<p>这两种做法（MC and DP）都是计算量很大的。如何简化？TD(0)给出的思路是：以$R_{t+1}+\gamma V(S_{t+1})$来估计（双重近似）$\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]$。双重近似来自于：1. 用一个采样点的值来近似期望；2. 用$V(S_{t+1})$来近似$v_\pi(S_{t+1})$。这样，以$R_{t+1}+\gamma V(S_{t+1})$为逼近的目标，每一步就是一个在线差分更新：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]\label{eqn_TD_5}<br>\end{equation}</p>
+<p>这样的好处在于快，计算量很小。那么如何进行偏差分析呢？</p>
+<p>定义TD error 为每一步的差分：$\delta_t=R_{t+1}+\gamma V(S_{t+1})-V(S_t)$, 那么Monte-Carlo偏差为：<br>\begin{eqnarray}<br>G_t-V(S_t)&amp;=&amp;R_{t+1}+\gamma G_{t+1} - V(S_t)+\gamma V(S_{t+1}) - \gamma V(S_{t+1})\notag\\<br>&amp;=&amp;\delta_t+\gamma(G_{t+1}-V_{t+1})\notag\\<br>&amp;=&amp;\delta_t+\gamma\delta_{t+1}+\gamma^2(G_{t+2}-V_{t+2})\notag\\<br>&amp;=&amp;\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}+…+\gamma^{T-t-1}\delta_{T-t-1}+\gamma^{T-t}(G_T-V(S_T))\notag\\<br>&amp;=&amp;\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}+…+\gamma^{T-t-1}\delta_{T-t-1}+\gamma^{T-t}(0-0)\notag\\<br>&amp;=&amp;\sum_{k=0}^{T-t-1}\gamma^k\delta_{t+k}<br>\end{eqnarray}<br>上式倒数第二行来自于如下设定：termination state的value为0。</p>
+<p>有了TD的方法做Policy Prediction，接下来我们看看如何用TD做Policy Control(或者称为Policy Improvement)。</p>
+<h3 id="Policy-Control-Using-TD"><a href="#Policy-Control-Using-TD" class="headerlink" title="Policy Control Using TD"></a>Policy Control Using TD</h3><p>在(\ref{eqn_TD_5})的基础上如何做policy control呢？与Monte-Carlo法类似的，如果我们假设不知道environment dynamic $p(s^\prime,r|s,a)$的显示表达，那么Policy Control 应该基于$q(s,a)$来做会更加直接和直观。由于需要考虑$(s,a)$对，于是有了如下三种不同的在线差分更新的方法：</p>
+<h4 id="1-Sarsa"><a href="#1-Sarsa" class="headerlink" title="1. Sarsa"></a>1. Sarsa</h4><p>简单上公式：<br>\begin{equation}<br>Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha[R_{t+1}+\gamma Q(S_{t+1}, A_{t+1})-Q(S_t,A_t)]<br>\end{equation}<br>其中最tricky的是$A_{t+1}$的选择。通常的做法是：保持Sarsa的on-policy属性，也就是从$\pi(a|S_t=s)$中选取$a$。如果策略$\pi$是deterministic的，那么$a$是个唯一值，无歧义；如果策略$\pi$是soft的，通常的做法是采用$\epsilon$-greedy的方法来同步进行Policy Control。伪代码如下。</p>
 <blockquote>
 <blockquote>
-<p>Input $\pi$, the policy to be evaluated<br>Initialize an array $V(s)=0$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
+<p>Initialize $Q(s,a), \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$, arbitrarily, and $Q(terminal-state, .)=0$<br>Repeat (for each episode):</p>
 <blockquote>
 <blockquote>
-<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<p>Initialize $S$<br>Choose $A$ from $S$ using policy derived from $Q$ (e.g., $\epsilon$-greedy<br>Repeat (for each step of episode):</p>
 <blockquote>
 <blockquote>
-<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$  </p>
+<p>Take action $A$, observe $R, S^\prime$<br>Choose $A^\prime$ from $S^\prime$ using policy derived from $Q$ (e.g. $\epsilon$-greedy)<br>$Q(S,A)\leftarrow Q(S,A)+\alpha[R+\gamma Q(S^\prime, A^\prime)-Q(S,A)]$<br>$S\leftarrow S^\prime, A\leftarrow A^\prime$</p>
 </blockquote>
 </blockquote>
 </blockquote>
 </blockquote>
-<p>until $\Delta &lt; \theta$ (a small positive number)<br>Output $V\approx v_\pi$</p>
+<p>Until $S$ is terminal</p>
 </blockquote>
 </blockquote>
-<h3 id="Policy-Improvement"><a href="#Policy-Improvement" class="headerlink" title="Policy Improvement"></a>Policy Improvement</h3><p>求出$v_\pi(s)$或者$q_\pi(s,a)$之后，下一步就是如何改进policy了。我们先从一个简单的场景入手：policy都是deterministic的，也就是$\pi(s)=a$，每一个状态的对应action只有一个唯一的选择。</p>
-<p>假设$\pi$与$\pi^\prime$是两个不同的确定性策略(deterministic policy)，使得$\forall s \in \mathcal{S}$，<br>\begin{equation}<br>q_\pi(s,\pi^\prime(s))\ge q_\pi(s,\pi(s))\label{eq3:PI_theorem}<br>\end{equation}<br>那么$v_{\pi^\prime}(s)\ge v_\pi(s)$。</p>
-<p><em>Note</em>: $\eqref{eq3:PI_theorem}$如何理解？我们要记住$q(s,a)$指的是当前状态$s$并采取行动$a$，然后在<strong>之后</strong>的后续状态采用策略$\pi$。这样就不会混淆表达式中的$\pi$与$\pi^\prime$</p>
-<p><em>证明</em>：<br>因为$\pi$是确定性策略，且$v_\pi(s)=\sum_a \pi(a|s)q_\pi(s,a)$，所以<br>$$<br>q_\pi(s,\pi^\prime(s))\ge v_\pi(s)<br>$$<br>(对于$\pi$是随机性策略也就是存在$\pi(a|s)$分布的情况，同样可得这样的结论。)<br>所以由上式以及Bellman公式$q_\pi(s,a)=\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=a]$，我们可得<br>\begin{eqnarray}<br>v_\pi(s)&amp;\le&amp;q_\pi(s,\pi^\prime(s))\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma v_\pi(S_{t+1})]|S_t=s]\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi^\prime(S_{t+1}))|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma \mathbb{E}_{\pi^\prime}[R_{t+2}+\gamma v_\pi(S_{t+2})]|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\notag\\<br>&amp;…&amp;\notag\\<br>&amp;\le&amp;\mathbb{E}_{\pi^\prime}[R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+2}+\gamma^3R_{t+3}+…|S_t=s]\notag\\<br>&amp;=&amp;v_{\pi^\prime}(s)\label{eq3:PI}<br>\end{eqnarray}<br>证毕。</p>
-<p>$\eqref{eq3:PI}$说明了，在满足$\eqref{eq3:PI_theorem}$的情况下（$\eqref{eq3:PI_theorem}$实际是首先对所有状态进行广度搜索, 因为它意味着，对每个状态，找到当前的更好动作$a^\prime$使得当前动作采用这个值而其后继续沿用策略$\pi$的情况下，$v(s)$更大，进而把所有这些$a^\prime$组合为新的最优策略$\pi^\ast$），对每一步进行greedy的策略改进，就可以最终得到最优策略$\pi^\ast$。由于最优策略存在，所以每一步的greedy策略改进会收敛到全局最优。为什么呢？因为我们每一步的策略改进都是针对整个状态空间进行了广度搜索的啊。最优策略以及最优策略下的optimal value参见上节。</p>
-<p>如果单步的策略改进存在多个$a^\prime$怎么办？这种情况下$\pi^\prime$是随机分布的策略，其概率分布在多个$a^\prime$上，分布函数待定。。。</p>
-<h3 id="Policy-Iteration-or-Value-Iteration"><a href="#Policy-Iteration-or-Value-Iteration" class="headerlink" title="Policy Iteration or Value Iteration"></a>Policy Iteration or Value Iteration</h3><p>从任意给定policy $\pi_0$出发，迭代进行Policy Evaluation $\eqref{eq3:PE}$与Policy Improvement $\eqref{eq3:PI_theorem}$，就可以得到最佳策略$\pi^\ast$，如下所示：<br>$$<br>\pi_0\stackrel{E}{\longrightarrow}v_{\pi_0}\stackrel{I}{\longrightarrow}\pi_1\stackrel{E}{\longrightarrow}v_{\pi_1}\stackrel{I}{\longrightarrow}\pi_2\stackrel{E}{\longrightarrow}…\stackrel{I}{\longrightarrow}\pi^\ast\stackrel{E}{\longrightarrow}v_\ast<br>$$<br>这一过程称为<strong>Policy Iteration</strong>，伪代码如下：</p>
+<h4 id="2-Off-Policy-Q-Learning"><a href="#2-Off-Policy-Q-Learning" class="headerlink" title="2. Off-Policy Q Learning"></a>2. Off-Policy Q Learning</h4><p>简单上公式：<br>\begin{equation}<br>Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \max_a Q(S_{t+1}, a)-Q(S_t,A_t)]<br>\end{equation}<br>其中$A_{t+1}$的选择，不再拘泥于策略$\pi(a|S_t=s)$，而是在所有action中选择当前最优的，这样behavior policy和target policy就不同，所以是off-policy的方法；好处在于，更加直接的针对最优$q^\ast$进行逼近。伪代码如下。</p>
 <blockquote>
 <blockquote>
-<ol>
-<li>Initialize $V(s)\in\mathbb{R}$, and $\pi(s)\in\mathcal{A}(s)$ $\forall s \in \mathcal{S}^+$</li>
-<li><strong>Policy Evaluation</strong><br>Repeat<blockquote>
-<blockquote>
-<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
+<p>Initialize $Q(s,a), \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$, arbitrarily, and $Q(terminal-state, .)=0$<br>Repeat (for each episode):</p>
 <blockquote>
 <blockquote>
-<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \sum_{s^\prime,r}p(s^\prime,r|s,\pi(s))[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$<br>until $\Delta &lt; \theta$ (a small positive number)</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</li>
-<li><strong>Policy Improvement</strong><br>policy_stable$\leftarrow$true<br>For each $s\in\mathcal{S}$:<blockquote>
-<blockquote>
-<p>old_action$\leftarrow\pi(s)$<br>$\pi(s)\leftarrow\mathop{argmax} \limits_{a}\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>if old_action$\neq\pi(s)$, then policy_stable$\leftarrow$false<br>if policy_stable, then stop and return $V\approx v_\ast$, and $\pi\approx\pi^\ast$; else go to 2</p>
-</blockquote>
-</blockquote>
-</li>
-</ol>
-</blockquote>
-</blockquote>
-<p>Policy Iteration的问题在于计算量大，Policy Evaluation的时候就全部状态空间广度遍历了，然后每一步Policy Improvement更新后又重新计算和更新一次$v(s)$。所以可以用如下的<strong>Value Iteration</strong>的方法来简化运算，同时确保收敛性：<br>$$<br>v_{k+1}(s)=\max_a\mathbb{E}[R_{k+1}+\gamma v_k(S_{k+1})|S_t=s,A_t=a]=\max_a\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]<br>$$</p>
-<p>对比一下$\eqref{eq3:PE}$，$\eqref{eq3:PI_theorem}$以及上式。$\eqref{eq3:PE}$是对$\pi(a|s)$求期望，然后$\eqref{eq3:PI_theorem}$求最大值；而上式直接对$q_k(s,a)$求基于$a$的最大值，将两步迭代合为一步；从另一个角度来理解上式：从上节的最佳策略下状态值函数推导可知$v_\ast(s)=\max \limits_{a} \sum_{s^\prime,r}p(s^\prime,r|s,a)[r+ \gamma v_\ast(s^\prime)]$，我们实际是套用了Policy Evaluation的同样的思路，用k-iteration的方法迭代的求解这个方程，也就是$v_\ast(s)$的DP解法（类似与Policy Evaluation中的$v_\pi(s)$的DP解法）。</p>
-<p>Value Iteration的伪代码如下：</p>
+<p>Initialize $S$<br>Choose $A$ from $S$ using policy derived from $Q$ (e.g., $\epsilon$-greedy<br>Repeat (for each step of episode):</p>
 <blockquote>
 <blockquote>
-<p>Initialize $V(s)\in\mathbb{R}$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
-<blockquote>
-<blockquote>
-<p>$\Delta\leftarrow 0$<br>For each $s\in\mathcal{S}$:</p>
-<blockquote>
-<blockquote>
-<p>$v\leftarrow V(s)$<br>$V(s)\leftarrow \max_a\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$<br>$\Delta\leftarrow \max(\Delta, |v-V(s)|)$<br>until $\Delta &lt; \theta$ (a small positive number)</p>
+<p>Take action $A$, observe $R, S^\prime$<br>$Q(S,A)\leftarrow Q(S,A)+\alpha[R+\gamma \max_a Q(S^\prime, a)-Q(S,A)]$<br>$S\leftarrow S^\prime$</p>
 </blockquote>
 </blockquote>
 </blockquote>
 </blockquote>
-<p>Output a detterministic policy $\pi\approx\pi^\ast$, such that $\pi(s)=\mathop{argmax} \limits_{a}\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma V(s^\prime)]$</p>
+<p>Until $S$ is terminal</p>
 </blockquote>
 </blockquote>
+<h4 id="3-Expected-Sarsa"><a href="#3-Expected-Sarsa" class="headerlink" title="3. Expected Sarsa"></a>3. Expected Sarsa</h4><p>简单上公式：<br>\begin{eqnarray}<br>Q(S_t,A_t)&amp;\leftarrow &amp; Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \mathbb{E} [Q(S_{t+1}, A_{t+1})|S_{t+1}]-Q(S_t,A_t)]\notag\\<br>&amp;\leftarrow &amp; Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \sum_a \pi(a|S_{t+1})Q(S_{t+1}, a)-Q(S_t,A_t)]<br>\end{eqnarray}</p>
+<p>如果expectation $\mathbb{E}$ 依然follow 策略$\pi$，如上式第二行所言，那么Expected Sarsa是on-policy的，它相比一般的Sarsa的优点在于：考虑了$\pi$的概率分布本身，减少了选择$A_{t+1}$的随机性；如果expectation $\mathbb{E}$ 采用了其他的策略分布$\mu$，它的策略可以更灵活，但是需要注意importance sampling ratio的问题，可以表达如下式：<br>\begin{equation}<br>Q(S_t,A_t)\leftarrow  Q(S_t,A_t)+\alpha[R_{t+1}+\gamma \sum_a \mu(a|S_{t+1})\rho Q(S_{t+1}, a)-Q(S_t,A_t)]<br>\end{equation}</p>
+<p>因为Expected Sarsa相比Sarsa减少了$A_{t+1}$选择中的随机性，所以性能，特别是Asymptotic性能会好很多；但是如何比较Sarsa与Q learning呢？Sutton的书上给了一个Cliff Walking的例子来说明Q Learning的风险在于每次都在最优$q^\ast$那里做$\epsilon$-greedy，但是个人认为这个例子比较极端，因为这个例子中，最优策略附近稍微$\epsilon$一下就会进入bad case，这样的分布不具备代表性。（难道要每次都在违法的边缘试探？）</p>
+<h4 id="4-Double-Q-Learning"><a href="#4-Double-Q-Learning" class="headerlink" title="4. Double Q Learning"></a>4. Double Q Learning</h4><p>上述的policy control共同面对的问题是，使用未收敛过程中的极值来作为极值的估计(a maximum over estimated values is used implicitly as an estimate of the maximum value)。如何解？将estimate与maximum解耦开，分别用两个$Q$序列来代表。公式如下：<br>\begin{equation}<br>Q_1(S_t,A_t)\leftarrow Q_1(S_t,A_t)+\alpha[R_{t+1}+\gamma Q_2(S_{t+1}, \mathop{argmax}_a Q_1(S_{t+1}, a))-Q_1(S_t,A_t)]<br>\end{equation}</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>TD方法兼顾了DP的优点(Bootstrap，这样不需要等到episode terminated才能迭代更新)，与Monte-Carlo的优点(model-free, 不需要知道environment dynamic $p(s^\prime, r|s,a)$)。实际运用可以很灵活。因为这里考虑model-free, 所以policy control都是基于$q(s,a)$来进行的，这样每次的$A_{t+1}$选择方式就很tricky，由此衍生出三种方法：Sarsa（完全on-policy，每次$A_{t+1}$根据$\epsilon$-greedy的方法从现有策略$\pi$中选择）；Q Learning (完全off-policy，每次$A_{t+1}$选取当前最优$q^\ast$)；Estimated Sarsa (不再随机选取$A_{t+1}$，而是考虑到策略带来的随机分布，可以on-policy也可以off-policy)。</p>
 
       
     </div>
@@ -430,8 +406,8 @@ MathJax.Hub.Config({
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/12/强化学习漫谈-2-Value/" rel="next" title="强化学习漫谈 2: Value">
-                <i class="fa fa-chevron-left"></i> 强化学习漫谈 2: Value
+              <a href="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/" rel="next" title="强化学习漫谈 4: 蒙特卡洛法">
+                <i class="fa fa-chevron-left"></i> 强化学习漫谈 4: 蒙特卡洛法
               </a>
             
           </div>
@@ -439,10 +415,6 @@ MathJax.Hub.Config({
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/" rel="prev" title="强化学习漫谈 4: 蒙特卡洛法">
-                强化学习漫谈 4: 蒙特卡洛法 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -565,7 +537,7 @@ MathJax.Hub.Config({
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Evaluation"><span class="nav-number">1.</span> <span class="nav-text">Policy Evaluation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Improvement"><span class="nav-number">2.</span> <span class="nav-text">Policy Improvement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Iteration-or-Value-Iteration"><span class="nav-number">3.</span> <span class="nav-text">Policy Iteration or Value Iteration</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Prediction-Using-TD"><span class="nav-number">1.</span> <span class="nav-text">Policy Prediction Using TD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Policy-Control-Using-TD"><span class="nav-number">2.</span> <span class="nav-text">Policy Control Using TD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Sarsa"><span class="nav-number">2.1.</span> <span class="nav-text">1. Sarsa</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Off-Policy-Q-Learning"><span class="nav-number">2.2.</span> <span class="nav-text">2. Off-Policy Q Learning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Expected-Sarsa"><span class="nav-number">2.3.</span> <span class="nav-text">3. Expected Sarsa</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Double-Q-Learning"><span class="nav-number">2.4.</span> <span class="nav-text">4. Double Q Learning</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
