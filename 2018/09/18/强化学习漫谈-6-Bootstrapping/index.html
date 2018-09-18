@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });    TD与MC为两端，中间的就是Multi-Step Bootstrapping。 基本概念上一章的TD是前进一步来做Bootstrapping，而之前的Monte_Carlo是每次走完一个episode后计算一个$G$值。这是在光谱中的两个极端">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-18T15:28:58.672Z">
+<meta property="og:updated_time" content="2018-09-18T15:30:26.050Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 6：Multi-Step Bootstrapping">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });    TD与MC为两端，中间的就是Multi-Step Bootstrapping。 基本概念上一章的TD是前进一步来做Bootstrapping，而之前的Monte_Carlo是每次走完一个episode后计算一个$G$值。这是在光谱中的两个极端">
@@ -350,7 +350,7 @@ MathJax.Hub.Config({
 
 <p>TD与MC为两端，中间的就是Multi-Step Bootstrapping。</p>
 <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>上一章的TD是前进一步来做Bootstrapping，而之前的Monte_Carlo是每次走完一个episode后计算一个$G$值。这是在光谱中的两个极端，有没有一个折衷方案？</p>
-<p>从另一个角度出发，我们希望决策是灵敏的，也就是每个Action基于的State步长都尽量的短；同时我们希望value的学习是更准确有效的，因此每次更新State Value (或者State Action Pair Value)的Bootstrapping步长都尽量的长。不幸的是，前面提到的方法中，这两个步长是一样的，（Sutton书中将其称为步长的专制 Tyranny of the time step）。因此我们希望有一种方法，区分对待这两个步长。</p>
+<p>从另一个角度出发，我们希望决策是灵敏的，也就是每个Action基于的State步长都尽量的短；同时我们希望value的学习是更准确有效的，因此每次更新State Value (或者State Action Pair Value)的Bootstrapping步长都尽量的长。不幸的是，前面提到的方法中，这两个步长是一样的，（Sutton书中将其称为步长的专制 Tyranny of the time step）。因此我们希望有一种方法，区分对待这两个步长。<br><a id="more"></a></p>
 <p>这个方法就是n-Step TD，或者称为Multi-Step Bootstrapping。</p>
 <p>概念很直观：如果我们从时刻$t$开始，希望走$n$步进行Bootstrapping (假设$n$步后episode没有结束)，那么我们差分更新的目标为：</p>
 <p>\begin{equation}<br>G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+…+\gamma^{n-1}R_{t+n}+\gamma^nV_{t+n-1}(S_{t+n})\label{eqn_n_g_6}<br>\end{equation}<br>如何理解上式？走第一步的时候Reward是$R_{t+1}$，走第$i$步的时候Reward是$R_{t+i}$，直到第$n$步，最后一项$\gamma^nV_{t+n-1}(S_{t+n})$是为episode的第$n$步之后被截断所引入的修正值，通过$V_{t+n-1}(S_{t+n})$表现出来。</p>

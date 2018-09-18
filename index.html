@@ -340,8 +340,7 @@
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
 });
@@ -350,27 +349,14 @@ MathJax.Hub.Config({
 
 <p>TD与MC为两端，中间的就是Multi-Step Bootstrapping。</p>
 <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>上一章的TD是前进一步来做Bootstrapping，而之前的Monte_Carlo是每次走完一个episode后计算一个$G$值。这是在光谱中的两个极端，有没有一个折衷方案？</p>
-<p>从另一个角度出发，我们希望决策是灵敏的，也就是每个Action基于的State步长都尽量的短；同时我们希望value的学习是更准确有效的，因此每次更新State Value (或者State Action Pair Value)的Bootstrapping步长都尽量的长。不幸的是，前面提到的方法中，这两个步长是一样的，（Sutton书中将其称为步长的专制 Tyranny of the time step）。因此我们希望有一种方法，区分对待这两个步长。</p>
-<p>这个方法就是n-Step TD，或者称为Multi-Step Bootstrapping。</p>
-<p>概念很直观：如果我们从时刻$t$开始，希望走$n$步进行Bootstrapping (假设$n$步后episode没有结束)，那么我们差分更新的目标为：</p>
-<p>\begin{equation}<br>G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+…+\gamma^{n-1}R_{t+n}+\gamma^nV_{t+n-1}(S_{t+n})\label{eqn_n_g_6}<br>\end{equation}<br>如何理解上式？走第一步的时候Reward是$R_{t+1}$，走第$i$步的时候Reward是$R_{t+i}$，直到第$n$步，最后一项$\gamma^nV_{t+n-1}(S_{t+n})$是为episode的第$n$步之后被截断所引入的修正值，通过$V_{t+n-1}(S_{t+n})$表现出来。</p>
-<p>由于$G_t^{(n)}$只有在走完$n$步后才能得到，所以Bootstrapping的更新部分只有在$t+n$时刻才能对起始状态$S_t$进行。（注：$t+n$时刻，来更新$t$时刻的状态$S_t$对应的Value），如下式所述：<br>\begin{equation}<br>V_{t+n}(S_t)=V_{t+n-1}(S_t)+\alpha [G_t^{(n)}-V_{t+n-1}(S_t)]\label{eqn_n_bst_6}<br>\end{equation}</p>
-<p>有了Prediction，下一步就是Control了。同样基于我们不知道Environment Dynamic $p(s^\prime, r|s,a)$的假设，计算$Q(s,a)$并进行greedy的Improvement会更加直观一些。因此下面几个小节将会谈到$Q(S_t,A_t)$的n步Bootstrapping。</p>
-<h3 id="n-Step-Sarsa"><a href="#n-Step-Sarsa" class="headerlink" title="n-Step Sarsa"></a>n-Step Sarsa</h3><p>一个很直观的n-Step Sarsa定义如下所述。n-step Return如下：<br>\begin{equation}<br>G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+…+\gamma^{n-1}R_{t+n}+\gamma^nQ_{t+n-1}(S_{t+n}, A_{t+n})\label{eqn_n_sarsa_6}<br>\end{equation}<br>它与(\ref{eqn_n_g_6})的区别在于，用$Q_{t+n-1}(S_{t+n}, A_{t+n})$替换$V_{t+n-1}(S_{t+n})$作为$n$步后截断的补偿项。</p>
-<p>$n$步后的Bootstrapping如下式：<br>\begin{equation}<br>Q_{t+n}(S_t,A_t)=Q_{t+n-1}(S_t,A_t)+\alpha [G_t^{(n)}-Q_{t+n-1}(S_t,A_t)]\label{eqn_n_sarsa_bstr_6}<br>\end{equation}</p>
-<p>此处值得关注的一个问题是Action的选取。显式的Action为$Q(S_{t+n},A_{t+n})$中的$A_{t+n}$，它是Bootstrapping最后一个状态下选取的下一个Action；隐式的Action选取为中间每一步Reward $R_{t+i}$都来自于选取的目前策略$\pi$下的某一个Action，因此这个过程中是可以做$\epsilon$-greedy进行探索(exploration)的。</p>
-<p>最后一个状态下的补偿项也可以根据该状态下所有可能action对应的$Q(S_{t+n},a)$的期望值来代替，这就是n-Step Expected Sarsa:<br>\begin{equation}<br>G_t^{(n)}=R_{t+1}+\gamma R_{t+2}+…+\gamma^{n-1}R_{t+n}+\gamma^n\sum_a \pi(a|S_{t+n})Q_{t+n-1}(S_{t+n}, a)\label{eqn_n_exp_sarsa_6}<br>\end{equation}<br>对于n-step Expected Sarsa而言，action的选取主要体现在每一步获得Reward上，同样是可以用$\epsilon$-greedy来选取策略$\pi$下的某个Action的。</p>
-<h3 id="n-step-Off-policy-Learning-by-Importance-Sampling"><a href="#n-step-Off-policy-Learning-by-Importance-Sampling" class="headerlink" title="n-step Off-policy Learning by Importance Sampling"></a>n-step Off-policy Learning by Importance Sampling</h3><p>对于Off-Policy的Learning, 我们引入第四章里的Importance Sampling的概念，计算一个Importance Sampling Ratio $\rho_t^{t+n}=\prod_{k=t}^{\min(t-n+1, T-1)}\frac{\pi(A_k|S_k)}{\mu(A_k|S_k)}$，然后apply到(\ref{eqn_n_bst_6})式中成为：<br>\begin{equation}<br>V_{t+n}(S_t)=V_{t+n-1}(S_t)+\alpha \rho_t^{t+n}[G_t^{(n)}-V_{t+n-1}(S_t)]\label{eqn_n_bst_imsam_6}<br>\end{equation}<br>或者apply到(\ref{eqn_n_sarsa_bstr_6})中成为：<br>\begin{equation}<br>Q_{t+n}(S_t,A_t)=Q_{t+n-1}(S_t,A_t)+\alpha \rho_{t+1}^{t+n}[G_t^{(n)}-Q_{t+n-1}(S_t,A_t)]\label{eqn_n_sarsa_bstr_imsam_6}<br>\end{equation}</p>
-<p>注意(\ref{eqn_n_bst_imsam_6})与(\ref{eqn_n_sarsa_bstr_imsam_6})的区别：对于$V(S_t)$的计算，从第一步开始就要选取Action，所以$\rho_t^{t+n}$从第一步（第$t$时刻）就开始；对于对于$Q(S_t,A_t)$的计算，因为$A_t$是已知条件，所以第一步(第$t$时刻)是不需要有ratio进行矫正的，所以这里使用$\rho_{t+1}^{t+n}$。同样的道理，如果我们采用n-step Off-Policy Expected Sarsa，最后一步的修正项是对所有action进行求取期望值的，所以使用$\rho_{t+1}^{t+n-1}$。<br>这些细节一定要注意清楚。</p>
-<h3 id="n-step-Off-policy-Learning-Without-Importance-Sampling-The-n-step-Tree-Backup-Algorithm"><a href="#n-step-Off-policy-Learning-Without-Importance-Sampling-The-n-step-Tree-Backup-Algorithm" class="headerlink" title="n-step Off-policy Learning Without Importance Sampling: The n-step Tree Backup Algorithm"></a>n-step Off-policy Learning Without Importance Sampling: The n-step Tree Backup Algorithm</h3><p>Importance Sampling始终存在的一个问题是引入了通常来说比较大的随机性（from $\rho$），使得每次进行更新的variance比较大，从而不得不采用较小的learning rate，降低了整体的学习性能。同时因为每一步都是选取某一个Action，没有充分利用到 (或者说考虑到)$\pi(a|s)$这样一个概率分布。所以这里引入了一个新的Off-policy的学习方法，称为n-step Tree Backup算法。从名字可以看出，我们在每一步backup的时候，是一个full-backup，也就是充分考虑到$\pi(a|s)$的概率分布。</p>
-<p>让我们从(\ref{eqn_n_sarsa_6})开始切入：<br>\begin{eqnarray}<br>G_t^{(1)}&amp;=&amp;R_{t+1}+\gamma Q_t(S_{t+1},A_{t+1})\notag\\<br>G_t^{(2)}&amp;=&amp;R_{t+1}+\gamma R_{t+2} + \gamma^2Q_t(S_{t+2},A_{t+2})\notag\\<br>&amp;=&amp;R_{t+1}+\gamma Q_t(S_{t+1},A_{t+1})-\gamma Q_t(S_{t+1},A_{t+1})+\gamma R_{t+2} + \gamma^2Q_t(S_{t+2},A_{t+2})\notag\\<br>&amp;=&amp;G_t^{(1)}-\gamma Q_t(S_{t+1},A_{t+1})+\gamma(R_{t+2}+\gamma Q_t(S_{t+2},A_{t+2}))\label{eqn_tb_6_1}\\<br>\end{eqnarray}</p>
-<p>如何理解(\ref{eqn_tb_6_1})？最后的等式可以理解为：在$G_t^{(1)}$的基础上，减去第一次计算Return时的修正项$\gamma Q_t(S_{t+1},A_{t+1})$，再加上新的步长带来的Reward和新的修正项$R_{t+2}+\gamma Q_t(S_{t+2},A_{t+2})$，with a discount $\gamma$。</p>
-<p>那么在Tree-Backup的算法中，我们定义expected action value为：<br>\begin{equation}<br>V_t=\sum_a \pi(a|S_t)Q_{t-1}(S_t,a)<br>\end{equation}<br>那么每前进一步，修正项是基于策略进行action的期望值计算而得，但是选取下一步的Action时，存在着这个Action的概率$\pi(A_{t+i}|S_{t+i})$，因此我们可以在前一个Return的基础上，首先减去选取的当前的Action对应的$Q$值，but scaled by probability of selecting $a$ as $\pi(a|s)$ and discounted by $\gamma$，然后加上后续的步长带来的Return，but still scaled by probability of selecting $a$ as $\pi(a|s)$ and discounted by $\gamma$。这样做，每一步选取$A_{t+i}$的时候，这个选中的Action的概率就会影响到它下面整棵树，概率就能Propogate并积累下来。公式如下：</p>
-<p>首先定义TD error为 (可以与上一章的TD error对比看看有什么差异，以及差异背后的含义)：<br>\begin{equation}<br>\delta_t=R_{t+1}+\gamma V_{t+1}-Q_{t-1}(S_t,A_t)<br>\end{equation}<br>那么我们有：<br>\begin{eqnarray}<br>G_t^{(1)}&amp;=&amp;R_{t+1}+\gamma V_{t+1}\notag\\<br>&amp;=&amp; Q_{t-1}(S_t,A_t)+\delta_t,\notag\\<br>G_t^{(2)}&amp;=&amp;G_t^{(1)}-\gamma \pi(A_{t+1}|S_{t+1})Q_t(S_{t+1},A_{t+1})+\gamma \pi(A_{t+1}|S_{t+1})[R_{t+2}+\gamma V_{t+2}]\notag\\<br>&amp;=&amp;G_t^{(1)}+\gamma\pi(A_{t+1}|S_{t+1})[R_{t+2}+\gamma V_{t+2}-Q_t(S_{t+1},A_{t+1})]\notag\\<br>&amp;=&amp;G_t^{(1)}+\gamma\pi(A_{t+1}|S_{t+1})\delta_{t+1}\notag\\<br>&amp;=&amp;Q_{t-1}(S_t,A_t)+\delta_t+\gamma\pi(A_{t+1}|S_{t+1})\delta_{t+1},\notag\\<br>G_t^{(3)}&amp;=&amp;Q_{t-1}(S_t,A_t)+\delta_t+\gamma\pi(A_{t+1}|S_{t+1})\delta_{t+1}+\gamma^2\pi(A_{t+1}|S_{t+1})\pi(A_{t+2}|S_{t+2})\delta_{t+2},\notag\\<br>G_t^{(n)}&amp;=&amp;Q_{t-1}(S_t,A_t)+\sum_{k=t}^{\min(t+n-1,T-1)}\delta_k\sum_{i=t+1}^k\gamma\pi(A_i|S_i)<br>\end{eqnarray}</p>
-<p>趋向$G_t^{(n)}$做Bootstrapping的更新方法不变，如式(\ref{eqn_n_sarsa_bstr_6})。</p>
-<h3 id="Unified-Algorithm-n-Step-Q-sigma"><a href="#Unified-Algorithm-n-Step-Q-sigma" class="headerlink" title="Unified Algorithm: n-Step $Q(\sigma)$"></a>Unified Algorithm: n-Step $Q(\sigma)$</h3><p>n-step Sarsa的每一步要选一个确定的Action然后向下走，而Tree-Back每一步都计算基于策略的所有Action对应的Value的期望值，每一步的计算都是对所有可行的$a$进行Span。我们可否有一种混合模式，使得对有一些step是选确定的Action，对另外一些step选择用期望值？一个最简单最tricky的方法就是每一步（Step $k$)采用一个0/1开关$\sigma_k$来控制。具体的数学表达太繁琐，可以参考书上的表达。此处略去细节。</p>
-
-          
+<p>从另一个角度出发，我们希望决策是灵敏的，也就是每个Action基于的State步长都尽量的短；同时我们希望value的学习是更准确有效的，因此每次更新State Value (或者State Action Pair Value)的Bootstrapping步长都尽量的长。不幸的是，前面提到的方法中，这两个步长是一样的，（Sutton书中将其称为步长的专制 Tyranny of the time step）。因此我们希望有一种方法，区分对待这两个步长。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/18/强化学习漫谈-6-Bootstrapping/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
