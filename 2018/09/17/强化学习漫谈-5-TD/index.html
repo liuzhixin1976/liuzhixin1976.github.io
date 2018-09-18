@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   They are general methods for learning to make long-term predictions about dynamical systems  简化，再简化。 Policy Prediction Usi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-17T08:52:42.550Z">
+<meta property="og:updated_time" content="2018-09-17T14:27:13.762Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 5：One-Step, Tabular, Model-Free TD">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   They are general methods for learning to make long-term predictions about dynamical systems  简化，再简化。 Policy Prediction Usi">
@@ -98,7 +98,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -329,8 +329,7 @@ MathJax.Hub.Config({
 <blockquote class="blockquote-center"><p>They are general methods for learning to make long-term predictions about dynamical systems</p>
 </blockquote>
 <p>简化，再简化。</p>
-<h3 id="Policy-Prediction-Using-TD"><a href="#Policy-Prediction-Using-TD" class="headerlink" title="Policy Prediction Using TD"></a>Policy Prediction Using TD</h3><p>对于在线更新的本质，如果我们希望$x$最终达到$\mathcal{X}$, 那么每一轮的在线更新是：$x_{k+1}=x_k+\alpha(\mathcal{X}-x_k)$，其中$\alpha$为learning rate。对应到上一章的Monte-Carlo法，我们有在线更新的公式（上一章公式5）：<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\notag<br>\end{equation}<br>或者写成update的方式：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[G_t-V(S_t)]\notag<br>\end{equation}<br>说明我们希望$V(S_t)$向$G_t$的目标逐步靠近。为什么要以$G_t$为目标呢？</p>
-<p>让我们回到value定义的本源：<br>\begin{eqnarray}<br>v_\pi(s)&amp;=&amp;\mathbb{E}_\pi[G_t|S_t=s]\label{eqn_MC_5}\\<br>&amp;=&amp;\mathbb{E}_\pi[\sum_{k=0}^\infty \gamma^k R_{t+k+1}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{t+1}+\gamma\sum_{k=0}^\infty \gamma^k R_{t+k+2}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{k+1}+\gamma v_\pi(S_{t+1})|S_t=s]\label{eqn_DP_5}<br>\end{eqnarray}</p>
+<h3 id="Policy-Prediction-Using-TD"><a href="#Policy-Prediction-Using-TD" class="headerlink" title="Policy Prediction Using TD"></a>Policy Prediction Using TD</h3><p>对于在线更新的本质，如果我们希望$x$最终达到$\mathcal{X}$, 那么每一轮的在线更新是：$x_{k+1}=x_k+\alpha(\mathcal{X}-x_k)$，其中$\alpha$为learning rate。对应到上一章的Monte-Carlo法，我们有在线更新的公式（上一章公式5）：<br>\begin{equation}<br>V_{n+1}=V_n+\frac{W_n}{C_n}[G_n-V_n]\notag<br>\end{equation}<br>或者写成update的方式：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[G_t-V(S_t)]\notag<br>\end{equation}<br>说明我们希望$V(S_t)$向$G_t$的目标逐步靠近。为什么要以$G_t$为目标呢？<br><a id="more"></a><br>让我们回到value定义的本源：<br>\begin{eqnarray}<br>v_\pi(s)&amp;=&amp;\mathbb{E}_\pi[G_t|S_t=s]\label{eqn_MC_5}\\<br>&amp;=&amp;\mathbb{E}_\pi[\sum_{k=0}^\infty \gamma^k R_{t+k+1}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{t+1}+\gamma\sum_{k=0}^\infty \gamma^k R_{t+k+2}|S_t=s]\notag\\<br>&amp;=&amp;\mathbb{E}_\pi[R_{k+1}+\gamma v_\pi(S_{t+1})|S_t=s]\label{eqn_DP_5}<br>\end{eqnarray}</p>
 <p>因为Monte Carlo法不知道environment dynamic $p(s^\prime, r|s,a)$，所以采用episode-wise的实验(experience)平均的方法，用平均的（或者加权平均的）$G_t$来估计/代替(\ref{eqn_MC_5})中的$\mathbb{E}_\pi[G_t|S_t=s]$。同样，(\ref{eqn_DP_5})则代表了DP的思想：bootstrap and expectation。</p>
 <p>这两种做法（MC and DP）都是计算量很大的。如何简化？TD(0)给出的思路是：以$R_{t+1}+\gamma V(S_{t+1})$来估计（双重近似）$\mathbb{E}_\pi[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]$。双重近似来自于：1. 用一个采样点的值来近似期望；2. 用$V(S_{t+1})$来近似$v_\pi(S_{t+1})$。这样，以$R_{t+1}+\gamma V(S_{t+1})$为逼近的目标，每一步就是一个在线差分更新：<br>\begin{equation}<br>V(S_t)\leftarrow V(S_t)+\alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]\label{eqn_TD_5}<br>\end{equation}</p>
 <p>这样的好处在于快，计算量很小。那么如何进行偏差分析呢？</p>
@@ -575,7 +574,7 @@ MathJax.Hub.Config({
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -674,6 +673,13 @@ MathJax.Hub.Config({
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>

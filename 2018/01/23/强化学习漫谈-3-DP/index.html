@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-03T14:04:51.667Z">
+<meta property="og:updated_time" content="2018-09-17T13:20:30.023Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 3：DP">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   The key idea of DP, and of reinforcement learning generally, is the use of value functions to organize and structure the s">
@@ -98,7 +98,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -332,8 +332,7 @@ MathJax.Hub.Config({
 <h3 id="Policy-Evaluation"><a href="#Policy-Evaluation" class="headerlink" title="Policy Evaluation"></a>Policy Evaluation</h3><p>从Bellman公式$v_\pi(s)=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_\pi(s^\prime)]$出发，如果状态空间有限（有terminate state，或者称为episodic task），并且environment’s dynamic $p(s^\prime,r|s,a)$已知，则可以用求解方程组的方式求出value function。但是显然这么做不是一个好办法。因此我们引入DP，使用迭代(iterative)的方法来估算$v_\pi(s)$。</p>
 <p>$\forall s \in \mathcal{S}$，初始化$v_0(s)$（注意此处简化下标，省略了$\pi$)为任何arbitrary初始值。然后运用下式来迭代计算$v(s)$。这种估算state value的方法称为<strong>policy evaluation</strong>。</p>
 <p>\begin{equation}<br>v_{k+1}(s)=\mathbb{E}_{\pi}[R_{t+1}+\gamma v_k(S_{t+1})|S_t=s]=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_k(s^\prime)]\label{eq3:PE}<br>\end{equation}</p>
-<p>这种迭代的方法是使用每个状态的所有后续状态的value估计值来更新当前状态value的估计值，因此被称为“<strong><em>full backup</em></strong>”。$v_{k+1}(s)$与$v_k(s^\prime)$可以是两个不同的序列，也可以是同一个序列进行原地更新(in place update)。</p>
-<p>使用DP进行policy evaluation的伪代码如下：</p>
+<p>这种迭代的方法是使用每个状态的所有后续状态的value估计值来更新当前状态value的估计值，因此被称为“<strong><em>full backup</em></strong>”。$v_{k+1}(s)$与$v_k(s^\prime)$可以是两个不同的序列，也可以是同一个序列进行原地更新(in place update)。<br><a id="more"></a><br>使用DP进行policy evaluation的伪代码如下：</p>
 <blockquote>
 <blockquote>
 <p>Input $\pi$, the policy to be evaluated<br>Initialize an array $V(s)=0$, $\forall s \in \mathcal{S}^+$<br>Repeat</p>
@@ -603,7 +602,7 @@ MathJax.Hub.Config({
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -702,6 +701,13 @@ MathJax.Hub.Config({
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>

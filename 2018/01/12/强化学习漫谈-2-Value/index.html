@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   终于来到了Value与Return的话题。经典的教材都会先定义Return as \begin{equation}G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}\label{eq2:ret_func}\end{e">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-22T03:27:56.408Z">
+<meta property="og:updated_time" content="2018-09-17T13:11:20.543Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 2: Value">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   终于来到了Value与Return的话题。经典的教材都会先定义Return as \begin{equation}G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}\label{eq2:ret_func}\end{e">
@@ -98,7 +98,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -333,8 +333,7 @@ MathJax.Hub.Config({
 <blockquote>
 <p>1, $\eqref{eq2:ret_func}$只是可能的Return的一种形式，我们可能会面对其他的Return定义形式；<br>2，Return也不一定是一个标量，也有可能是一个向量。</p>
 </blockquote>
-<p>所以我们先不要完全限定Return的表现形式，而是做一个合乎直觉也方便我们继续进行下去的假设，可以称之为 <em>独立可加</em> 假设: </p>
-<p>\begin{equation}<br>G_t=R_{t+1}\oplus g(G_{t+1})\label{eq2:gen_G}<br>\end{equation}</p>
+<p>所以我们先不要完全限定Return的表现形式，而是做一个合乎直觉也方便我们继续进行下去的假设，可以称之为 <em>独立可加</em> 假设:<br><a id="more"></a><br>\begin{equation}<br>G_t=R_{t+1}\oplus g(G_{t+1})\label{eq2:gen_G}<br>\end{equation}</p>
 <p>其中$\oplus$满足$\mathbb{E}_{e}(x\oplus y)=\mathbb{E}_e(x)\oplus\mathbb{E}_e(y)$, $\mathbb{E}_e$为对环境反馈$p(s^{\prime},r|s,a)$进行期望计算（<strong>注意</strong>此处$\mathbb{E}_e$与$\mathbb{E}_{\pi}$的区别，$\mathbb{E}_e$是对环境模型进行期望，而$\mathbb{E}_{\pi}$是对策略$\pi$进行统计期望），从这个意义上来说，$\oplus$算子是统计意义上（或者准确的说，统计期望意义上）的线性算子，也就是说，只要统计意义上满足$\mathbb{E}_{e}(x\oplus y)=\mathbb{E}_e(x)\oplus\mathbb{E}_e(y)$，那么$x$和$y$不一定以线性组合的形式表达$G_t$。同样的，我们还假设<br>\begin{equation}<br>\mathbb{E}_e(g(x))=g(\mathbb{E}_e(x))\label{eq2:linear}<br>\end{equation}<br>也就是说$g$也是对$\mathbb{E}_e$统计意义上线性的。</p>
 <p>不难看出，$\eqref{eq2:ret_func}$是$\eqref{eq2:gen_G}$的一种特殊形式。此外还需要注意的是，$G_t$是$t$时刻的Return，但是是从$t+1$时刻的$R_{t+1}$开始的。</p>
 <p>从Return可以定义出Value Function来。对状态$s$的State Value，定义如下：<br>\begin{equation}<br>v_\pi(s)=\mathbb{E}_\pi[G_t|S_t=s] \label{eq2:state_value}<br>\end{equation}<br>对状态、行为对(state-action pair)的value定义如下：<br>\begin{equation}<br>q_\pi(s,a)=\mathbb{E}_\pi[G_t|S_t=s, A_t=a]\label{eq2:pair_value}<br>\end{equation}<br>$v_\pi(s)$与$q_\pi(s,a)$分别表达$t$时刻状态为$S_t=s$或者$t$时刻状态$t$并采取行动$a$的情况下，<strong>如果按照策略$\pi$进行$t+1$开始的后续行为</strong>，其expected return是什么。</p>
@@ -524,7 +523,7 @@ MathJax.Hub.Config({
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -623,6 +622,13 @@ MathJax.Hub.Config({
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>

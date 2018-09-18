@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Reinforcement Learning">
 <meta property="og:description" content="Monte Carlo Prediction/EstimationDP很好很强大，然而DP需要环境的完整知识$p(s^\prime, r|s,a)$，在很多实际场景中这个变量是未知或者至少不完全已知的，因此要求我们有别的办法来估算值函数，并进一步进行策略的优化。考虑到值函数的定义是一个数学期望，在概率分布未知的情况下进行数学期望的估算，最经典最直接的办法就是Monte-Carlo法：进行充足的实验">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-17T06:47:39.311Z">
+<meta property="og:updated_time" content="2018-09-17T13:21:18.173Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 4: 蒙特卡洛法">
 <meta name="twitter:description" content="Monte Carlo Prediction/EstimationDP很好很强大，然而DP需要环境的完整知识$p(s^\prime, r|s,a)$，在很多实际场景中这个变量是未知或者至少不完全已知的，因此要求我们有别的办法来估算值函数，并进一步进行策略的优化。考虑到值函数的定义是一个数学期望，在概率分布未知的情况下进行数学期望的估算，最经典最直接的办法就是Monte-Carlo法：进行充足的实验">
@@ -98,7 +98,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -321,7 +321,7 @@
 
       
         <h3 id="Monte-Carlo-Prediction-Estimation"><a href="#Monte-Carlo-Prediction-Estimation" class="headerlink" title="Monte Carlo Prediction/Estimation"></a>Monte Carlo Prediction/Estimation</h3><p>DP很好很强大，然而DP需要环境的完整知识$p(s^\prime, r|s,a)$，在很多实际场景中这个变量是未知或者至少不完全已知的，因此要求我们有别的办法来估算值函数，并进一步进行策略的优化。考虑到值函数的定义是一个数学期望，在概率分布未知的情况下进行数学期望的估算，最经典最直接的办法就是Monte-Carlo法：进行充足的实验，用采样+值平均的办法来逼近数学期望，从而不依赖于概率分布的显示表达。</p>
-<p>使用蒙特卡洛法进行数学期望的估算，首先要意识到，每次估算的结果只有在进行足够的试验之后才能得出，而MDP的场景中，“试验的每一步”意味着从某一个状态开始，模拟$a$仿真得到$r$与下一步状态$s^\prime$，“充足的试验”则意味着从初始状态$s_0$开始，经历每一步状态流转，直到结束状态terminal state，这也意味了两点：</p>
+<p>使用蒙特卡洛法进行数学期望的估算，首先要意识到，每次估算的结果只有在进行足够的试验之后才能得出，而MDP的场景中，“试验的每一步”意味着从某一个状态开始，模拟$a$仿真得到$r$与下一步状态$s^\prime$，“充足的试验”则意味着从初始状态$s_0$开始，经历每一步状态流转，直到结束状态terminal state，这也意味了两点：<br><a id="more"></a></p>
 <ol>
 <li>蒙特卡洛法只适用于episodic tasks。</li>
 <li>蒙特卡洛法的值函数估计(value function estimation)是episode-by-episode进行的，而不是DP中的step-by-step的online方式。我们只有在进行完一次完整的仿真（从初始状态直到终结状态）后，才能计算当前仿真episode的值。</li>
@@ -614,7 +614,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -713,6 +713,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
