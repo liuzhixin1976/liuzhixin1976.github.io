@@ -80,12 +80,12 @@
 
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="About Reinforcement Learning">
+<meta property="og:title" content="About Learning">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="About Reinforcement Learning">
+<meta property="og:site_name" content="About Learning">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="About Reinforcement Learning">
+<meta name="twitter:title" content="About Learning">
 
 
 
@@ -121,7 +121,7 @@
 
 
 
-  <title>About Reinforcement Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -152,7 +152,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">About Reinforcement Learning</span>
+        <span class="site-title">About Learning</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -249,6 +249,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="刘志欣">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="About Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/" itemprop="url">强化学习漫谈 8：On-Policy with Approximation</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-24T23:45:32+08:00">
+                2018-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/" class="leancloud_visitors" data-flag-title="强化学习漫谈 8：On-Policy with Approximation">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<p>离开Tabular方法，进入Approximation的世界。这一章先讲On-Policy部分。</p>
+<h3 id="On-Policy-Prediction-With-Approximation"><a href="#On-Policy-Prediction-With-Approximation" class="headerlink" title="On-Policy Prediction With Approximation"></a>On-Policy Prediction With Approximation</h3><p>用回归Regression的方法来近似值函数，这是强化学习中除了Tabular方法之外常见的方法。从状态空间抽象出特征构成特征空间，然后用特征作为输入，运用machine learning的方法进行回归。从machine learning的角度，我们自然会有如下的思路：</p>
+<ol>
+<li>特征空间比状态空间维度低很多，因此回归过程中参数的改变会改变很多或者所以状态的值函数。如何针对这一情况定义出loss function以确保状态空间中所有状态的值函数收敛到我们期望的目标？</li>
+<li>定义出loss function后，针对训练样本，每一步的目标target是什么？</li>
+<li>训练方法是什么？
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -258,7 +414,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -410,7 +566,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -564,7 +720,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -718,7 +874,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -864,7 +1020,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -1021,7 +1177,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -1179,7 +1335,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -1327,7 +1483,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -1471,7 +1627,7 @@ MathJax.Hub.Config({
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Reinforcement Learning">
+      <meta itemprop="name" content="About Learning">
     </span>
 
     
@@ -1636,7 +1792,7 @@ MathJax.Hub.Config({
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
