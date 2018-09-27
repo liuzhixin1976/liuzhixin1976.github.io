@@ -79,21 +79,18 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？ Prioritized Sweeping and Model Learning在Model-free的假设下，无论Monte-Carlo法还是TD都是通">
+<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   从On Policy到Off Policy，不是简单加一个Importance Sampling Ratio这么简单。下面分两个部分：target of the update，以及distribution of the update。 Targ">
 <meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强化学习漫谈 7：剪枝与Planning">
-<meta property="og:url" content="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/index.html">
+<meta property="og:title" content="强化学习漫谈 9：Off Policy Approximation">
+<meta property="og:url" content="http://yoursite.com/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/index.html">
 <meta property="og:site_name" content="About Learning">
-<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？ Prioritized Sweeping and Model Learning在Model-free的假设下，无论Monte-Carlo法还是TD都是通">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   从On Policy到Off Policy，不是简单加一个Importance Sampling Ratio这么简单。下面分两个部分：target of the update，以及distribution of the update。 Targ">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/heuristic_search.png">
-<meta property="og:image" content="http://yoursite.com/images/mcts.png">
-<meta property="og:updated_time" content="2018-09-19T04:04:18.872Z">
+<meta property="og:updated_time" content="2018-09-27T14:06:19.915Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="强化学习漫谈 7：剪枝与Planning">
-<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？ Prioritized Sweeping and Model Learning在Model-free的假设下，无论Monte-Carlo法还是TD都是通">
-<meta name="twitter:image" content="http://yoursite.com/images/heuristic_search.png">
+<meta name="twitter:title" content="强化学习漫谈 9：Off Policy Approximation">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   从On Policy到Off Policy，不是简单加一个Importance Sampling Ratio这么简单。下面分两个部分：target of the update，以及distribution of the update。 Targ">
 
 
 
@@ -123,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/"/>
 
 
 
 
 
-  <title>强化学习漫谈 7：剪枝与Planning | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>强化学习漫谈 9：Off Policy Approximation | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -256,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="刘志欣">
@@ -273,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强化学习漫谈 7：剪枝与Planning</h1>
+          <h1 class="post-title" itemprop="name headline">强化学习漫谈 9：Off Policy Approximation</h1>
         
 
         <div class="post-meta">
@@ -285,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-19T10:05:29+08:00">
-                2018-09-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-27T19:58:39+08:00">
+                2018-09-27
               </time>
             
 
@@ -304,8 +301,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/09/19/强化学习漫谈-7-剪枝与Planning/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/19/强化学习漫谈-7-剪枝与Planning/" itemprop="commentCount"></span>
+                <a href="/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -313,7 +310,7 @@
 
           
           
-             <span id="/2018/09/19/强化学习漫谈-7-剪枝与Planning/" class="leancloud_visitors" data-flag-title="强化学习漫谈 7：剪枝与Planning">
+             <span id="/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/" class="leancloud_visitors" data-flag-title="强化学习漫谈 9：Off Policy Approximation">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -350,23 +347,31 @@ MathJax.Hub.Config({
 });
 </script>
 
-<p>在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？</p>
-<h3 id="Prioritized-Sweeping-and-Model-Learning"><a href="#Prioritized-Sweeping-and-Model-Learning" class="headerlink" title="Prioritized Sweeping and Model Learning"></a>Prioritized Sweeping and Model Learning</h3><p>在Model-free的假设下，无论Monte-Carlo法还是TD都是通过实验持续的估计并逼近value function，这样会有一些缺乏目标性。直观的说，我们应该更关注value变化大的$(s,a)$ pair，以及它的前序pair，因为任何pair的值函数的改变，都会back up到前序pair，这个值变化越大，对前序的状态下值的改变也越大，因此也越值得我们关注。具体的做法是：对于所有的$(s,a)$ pair，我们定义它的状态更新优先级；如果是deterministic policy，那么value的改变就是这个优先级，值改变越大的pair，其前馈back up的优先级越高；如果是stochastic policy，也就是存在$\pi(a|s)$概率，那么要综合考虑pair的值改变大小与这个概率大小；一旦确定了这个前馈back up的优先级，那么就建立一个优先级队列，每次更新值函数的时候，如果这个对应的优先级超过一定阈值，就把它插入到优先级队列的相应位置，然后按照优先级队列进行依次back up。<br><a id="more"></a></p>
-<p>需要注意的一点是，我们之前讨论的back up算法都是，对每个$(s,a)$ pair，进行试验或者推演，知道它的后续状态，然后把后续状态对应的$(s,a)$ pair value back-up到当前的值函数，这是一个向后看的过程；但是我们做Prioritized Sweeping的时候，是知道了某个后面的值得关注的状态，需要向前看，逐步back-up到前序状态去 (称为$\textit{backward focusing}$)。因此我们需要学习model，也就是在每一次向后看的过程中，把$(S_k,A_k)\rightarrow (S_{k+1}, R_{k+1})$记录在一个表里。一旦把这个表建立起来了，我们就学习到了整个model $p(s^\prime,r|s,a)$。</p>
-<p>Model Learning和Prioritized Sweeping可以是一个互相交织交替前进的过程。同时Prioritized Sweeping也是一个剪枝过程（backwards focusing），更关注需要关注的状态（高优先级的），同时减掉没有值函数变化的分支。</p>
-<h3 id="Heuristic-Search"><a href="#Heuristic-Search" class="headerlink" title="Heuristic Search"></a>Heuristic Search</h3><p>通过Model Learning 我们建立了$(s,a)\rightarrow (s^\prime, r)$这个表后，我们实际上就可以张开一棵完整的S-&gt;A-&gt;S-&gt;A-&gt;S的树了。当action-state value不准确的时候（例如，TD是逐渐逼近收敛到准确值的，在这个过程中value值是不准确的），我们在这棵树下面探索的越深，得到的策略就越靠近最优策略。最极端的情况是MC，虽然不知道整棵树，但是通过持续的实验，每次实验都会走到episode termination，这样得到的单个episode的Return G是准确的，所以平均之后就可以获取最佳的策略。但是在这棵树上探索很深的话必然带来计算量的急剧增大。</p>
-<p>因此Heuristic Search的基本思想就是：通过Model Learning构建S-&gt;A-&gt;S-&gt;A-&gt;S的树，在这棵树上只关注当前状态和它的可能后续状态，也就是每次back up只通过当前节点的下一级来Bootstrap；但是通过递归的方法将每一次的back up深入到最终的叶子节点或者value变化（通过discount后）低于某个阈值。</p>
-<p>如下图所事，我们对这棵搜索树进行深度优先遍历DFS，然后按照遍历的顺序反向backup，每次backup只关注当前节点和它的可能子节点。在这个过程中可以不断做剪枝。注意图中back up的顺序实际就是DFS的遍历顺序。<br><img src="/images/heuristic_search.png" alt=""></p>
-<h3 id="蒙特卡洛树搜索-MCTS"><a href="#蒙特卡洛树搜索-MCTS" class="headerlink" title="蒙特卡洛树搜索 MCTS"></a>蒙特卡洛树搜索 MCTS</h3><p>MCTS是结合了树搜索和Monte-Carlo方法的一种搜索树剪枝与back up的方法。如下图所示，MCTS有4个步骤：</p>
+<p>从On Policy到Off Policy，不是简单加一个Importance Sampling Ratio这么简单。下面分两个部分：target of the update，以及distribution of the update。</p>
+<h3 id="Target-of-Update"><a href="#Target-of-Update" class="headerlink" title="Target of Update"></a>Target of Update</h3><p>延续上一章On-Policy的Semi-Gradient方法，加入importance sampling ratio定义如下：<br>\begin{equation}<br>\rho_{t:n}=\prod_{i=s}^n\frac{\pi(A_i|S_i)}{b(A_i|S_i)}<br>\end{equation}<br>Per-step importance sampling ratio为：<br>\begin{equation}<br>\rho_t=\rho_{t:t}=\frac{\pi(A_t|S_t)}{b(A_t|S_t)}<br>\end{equation}<br>那么Off-Policy的Semi-Gradient自然推论如下：<br><a id="more"></a></p>
 <ol>
-<li>Selection: 通过某种方法得到当前的最优路径。（$\epsilon$-greedy，或者Upper Confidence Bounds (UCB)，达到exploitation-exploration的平衡）</li>
-<li>Expansion: 在选择的路径最终的叶子节点L（如果不是termination节点），张开后续的子节点C（可能的Action及其对应的后续状态）</li>
-<li>Simulation: 从C开始进行simulation (or: rollout)，通过rollout policy来估算子节点的value。</li>
-<li>Backup: 对C节点的Value，进行反向的back up，更新路径上的value。<br><img src="/images/mcts.png" alt=""></li>
+<li>TD(0):<br>\begin{equation}<br>w_{t+1}=w_t+\alpha\rho_t\delta_t\nabla\hat{v}(S_t,w_t)<br>\end{equation}<br>对于episodic task:<br>\begin{equation}<br>\delta_t=R_{t+1}+\gamma\hat{v}(S_{t+1},w_t)-\hat{v}(S_t,w_t)<br>\end{equation}<br>对于continuing average reward task:<br>\begin{equation}<br>\delta_t=R_{t+1}-\overline{R}_t+\hat{v}(S_{t+1},w_t)-\hat{v}(S_t,w_t)<br>\end{equation}</li>
+<li>Expected One-Step Sarsa:<br>\begin{equation}<br>w_{t+1}=w_t+\alpha\delta_t\nabla\hat{q}(S_t,A_t,w_t)<br>\end{equation}<br>对于episodic task:<br>\begin{equation}<br>\delta_t=R_{t+1}+\gamma\sum_a\pi(a|S_{t+1})\hat{q}(S_{t+1},a,w_t)-\hat{q}(S_t,A_t,w_t)<br>\end{equation}<br>对于continuing average reward task:<br>\begin{equation}<br>\delta_t=R_{t+1}-\overline{R}_t+\sum_a\pi(a|S_{t+1})\hat{q}(S_{t+1},a,w_t)-\hat{q}(S_t,A_t,w_t)<br>\end{equation}<br>注意这里没有importance sampling ratio $\rho$，因为Expected Salsa中生成的action样本只有$t$时刻的$A_t$，而$t$时刻的状态与行为与behavior policy无关。</li>
+<li>n-Step Sarsa:<br>\begin{equation}<br>w_{t+n}=w_{t+n-1}+\alpha\rho_{t+1:t+n-1}[G_{t:t+n}-\hat{q}(S_t,A_t,w_{t+n-1})]\nabla\hat{q}(S_t,A_t,w_{t+n-1})<br>\end{equation}<br>对于episodic task:<br>\begin{equation}<br>G_{t:t+n}=R_{t+1}+…+\gamma^{n-1}R_{t+n}+\gamma^n\hat{q}(S_{t+n},A_{t+n},w_{t+n-1})<br>\end{equation}<br>对于continuing average reward task:<br>\begin{equation}<br>\delta_t=R_{t+1}-\overline{R}_t+…+R_{t+n}-\overline{R}_{t+n-1}+\hat{q}(S_{t+n},A_{t+n},w_{t+n-1})<br>\end{equation}</li>
+<li>n-Step Tree-Backup:<br>\begin{equation}<br>w_{t+n}=w_{t+n-1}+\alpha[G_{t:t+n}-\hat{q}(S_t,A_t,w_{t+n-1})]\nabla\hat{q}(S_t,A_t,w_{t+n-1})<br>\end{equation}<br>其中:<br>\begin{equation}<br>G_{t:t+n}=\hat{q}(S_t,A_t,w_{t-1})+\sum_{k=t}^{t+n-1}\delta_k\prod_{i=t+1}^k\gamma\pi(A_i|S_i)<br>\end{equation}<br>注意这里也没有importance samping ratio，为什么？</li>
 </ol>
-<p>MCTS与MC的区别在于，MCTS在对model感知的基础上，避免了MC每次随机盲目的走完整个episode带来的模拟次数很多的缺点，可以在每一步都有选择性的剪枝，减少了模拟起始点的集合大小。</p>
-<p>MCTS与传统树搜索的区别在于，MCTS是用增量的方法(incrementally)构建了一个子树，减小了搜索空间。同时它执行的树搜索是一种非对称（asymmetric）的结构，将搜索聚焦在最值得关注的部分。</p>
-<p>因此MCTS是不需要领域策略（不需要知道不同游戏的具体规则，只需要知道胜负结果），适合用在巨大搜索空间的，只需要部分感知model（从根节点到需要expansion的叶子节点，expanded叶子节点以下通过simulation的方式来执行）的有效的剪枝方法。</p>
+<blockquote>
+<blockquote>
+<p><em>是否需要importance sampling ratio，以及需要多少步，取决于通过behavior policy 生成了多少样本。</em></p>
+</blockquote>
+</blockquote>
+<h3 id="Off-Policy-Approximation的收敛性"><a href="#Off-Policy-Approximation的收敛性" class="headerlink" title="Off-Policy Approximation的收敛性"></a>Off-Policy Approximation的收敛性</h3><h4 id="The-Deadly-Triad"><a href="#The-Deadly-Triad" class="headerlink" title="The Deadly Triad"></a>The Deadly Triad</h4><p>Function Approximation + Bootstrapping + Off-Policy training，三者同时存在时，学习过程是不稳定的，存在发散（不收敛）的情况，这三兄弟被称为Deadly Triad。</p>
+<h4 id="函数空间的映射与各种优化目标"><a href="#函数空间的映射与各种优化目标" class="headerlink" title="函数空间的映射与各种优化目标"></a>函数空间的映射与各种优化目标</h4><p>为了研究Off-policy Approximation的收敛性问题，我们通常从函数空间的映射关系来切入。<br>首先是各种定义：</p>
+<p>A. 状态值函数构成的函数空间标记为$\mathfrak{V}$，其上的一个点就是某个策略$\pi$对应的状态值函数$v_\pi$。考虑到状态自身的分布概率，函数空间$\mathfrak{V}$上的欧式范数定义为：<br>对于离散状态空间$\mathcal{S}$:<br>\begin{equation}<br>\lVert v \rVert_\mu^2=\sum_{s\in\mathcal{S}}\mu(s)v(s)^2<br>\end{equation}<br>对于连续状态空间$\mathcal{S}$:<br>\begin{equation}<br>\lVert v \rVert_\mu^2=\int_{s\in\mathcal{S}}\mu(s)v(s)^2<br>\end{equation}</p>
+<p>因此上一章中的Mean-Squared Value Error \overline{VE}为：<br>\begin{equation}<br>\overline{VE}=\lVert v_w-v_\pi \rVert_\mu^2<br>\end{equation}</p>
+<p>B. Approximated Value Function构成的函数空间标记为$\mathfrak{W}$，其上的一个点是一组参数$w$对应的估计函数。注意$\mathfrak{W}$是$\mathfrak{V}$的一个子空间，我们可以成为表征子空间。用$\mathfrak{W}$空间中的点来近似$\mathfrak{V}$空间中的点，Error最小的映射方法是投影$\Pi$：<br>\begin{equation}<br>\Pi v=v_w, \text{where }w=\mathop{argmin}_w \lVert v-v_w \rVert_\mu^2<br>\end{equation}<br>对于线性回归：<br>\begin{equation}<br>\Pi=\textbf{X}(\textbf{X}^\mathsf{T}\textbf{DX})^{-1}\textbf{X}^\textsf{T}\textbf{D},<br>\end{equation}<br>其中$\textbf{D}$是对角线矩阵，对角线为$\mu(s)$；$\textbf{X}$的每一行为一个特征向量$\textbf{x}(s)$<br>and<br>\begin{equation}<br>\lVert v \rVert_\mu^2=v^\mathsf{T}\textbf{D}v<br>\end{equation}<br>以及近似函数的映射为：<br>\begin{equation}<br>v_w=\Pi v=\textbf{Xw}<br>\end{equation}</p>
+<p>C. Bellman算子$B_\pi$定义为$\mathfrak{V}\rightarrow\mathfrak{V}$的一个映射：<br>\begin{equation}<br>(B_\pi v)(s)=\sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v(s^\prime)]<br>\end{equation}<br>对于real State Value function $v\in\mathfrak{V}$，熟悉的Bellman公式为：<br>\begin{equation}<br>v(s)=(B_\pi v)(s)<br>\end{equation}<br>满足上式的$v$是理想情况下的收敛点。</p>
+<p>如果将$\mathfrak{W}$中的一个点$v_w$通过Bellman算子映射到$B_\pi v_w\in\mathfrak{V}$，其Error成为Bellman Error Vector:<br>\begin{eqnarray}<br>\overline{\delta}_w&amp;=&amp;B_\pi v_w - v_w\notag\\<br>&amp;=&amp;\lgroup \sum_a\pi(a|s)\sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_w(s^\prime)] \rgroup - v_w(s)\notag\\<br>&amp;=&amp;\mathbb{E}[R_{t+1}+\gamma v_w(S_{t+1})-v_w(S_t)|S_t=s,A_t\thicksim\pi]<br>\end{eqnarray}<br>可见Bellman Error是TD error的期望值。 </p>
+<p>Mean-Squared Bellman Error定义如下：<br>\begin{equation}<br>\overline{BE}(w)=\lVert \overline{\delta}_w \rVert_\mu^2<br>\end{equation}</p>
+<p>通过类DP方式进行 value function approximation的步骤可以表达成下列的一系列$\mathfrak{V}$和$\mathfrak{W}$之间的算子交替（注意$\Pi: \mathfrak{V}\rightarrow \mathfrak{W}$，$B_\pi: \mathfrak{W}\rightarrow \mathfrak{V}$）：<br>\begin{equation}<br>v_w\in\mathfrak{W}\stackrel{B_\pi}{\longrightarrow}B_\pi v_w\in\mathfrak{V}\stackrel{\Pi}{\longrightarrow}\Pi B_\pi v_w\in\mathfrak{W}<br>\stackrel{B_\pi}{\longrightarrow} … …<br>\end{equation}</p>
+<p>从$v_w\in\mathfrak{W}$到$\Pi B_\pi v_w\in\mathfrak{W}$的距离定义为Mean Square Projected Bellman Error：<br>\begin{equation}<br>\overline{PBE}(w)=\lVert \Pi\overline{\delta}_w \rVert_\mu^2<br>\end{equation}</p>
+<p>下面讨论分别以$\overline{TDE}$、$\overline{BE}$和$\overline{PBE}$为最小化目标的学习方式，以及各自的收敛性。</p>
+<p><em>（后续把这部分再补齐）</em></p>
 
       
     </div>
@@ -397,8 +402,8 @@ MathJax.Hub.Config({
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/18/强化学习漫谈-6-Bootstrapping/" rel="next" title="强化学习漫谈 6：Multi-Step Bootstrapping">
-                <i class="fa fa-chevron-left"></i> 强化学习漫谈 6：Multi-Step Bootstrapping
+              <a href="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/" rel="next" title="强化学习漫谈 8：On-Policy with Approximation">
+                <i class="fa fa-chevron-left"></i> 强化学习漫谈 8：On-Policy with Approximation
               </a>
             
           </div>
@@ -406,10 +411,6 @@ MathJax.Hub.Config({
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/" rel="prev" title="强化学习漫谈 8：On-Policy with Approximation">
-                强化学习漫谈 8：On-Policy with Approximation <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -535,7 +536,7 @@ MathJax.Hub.Config({
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prioritized-Sweeping-and-Model-Learning"><span class="nav-number">1.</span> <span class="nav-text">Prioritized Sweeping and Model Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heuristic-Search"><span class="nav-number">2.</span> <span class="nav-text">Heuristic Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#蒙特卡洛树搜索-MCTS"><span class="nav-number">3.</span> <span class="nav-text">蒙特卡洛树搜索 MCTS</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Target-of-Update"><span class="nav-number">1.</span> <span class="nav-text">Target of Update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Off-Policy-Approximation的收敛性"><span class="nav-number">2.</span> <span class="nav-text">Off-Policy Approximation的收敛性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#The-Deadly-Triad"><span class="nav-number">2.1.</span> <span class="nav-text">The Deadly Triad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数空间的映射与各种优化目标"><span class="nav-number">2.2.</span> <span class="nav-text">函数空间的映射与各种优化目标</span></a></li></ol></li></ol></div>
             
 
           </div>
