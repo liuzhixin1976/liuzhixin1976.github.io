@@ -249,6 +249,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/28/强化学习漫谈-10-Policy-Gradient/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="刘志欣">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="About Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/28/强化学习漫谈-10-Policy-Gradient/" itemprop="url">强化学习漫谈 10：Policy Gradient</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-28T13:47:42+08:00">
+                2018-09-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/28/强化学习漫谈-10-Policy-Gradient/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/28/强化学习漫谈-10-Policy-Gradient/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/09/28/强化学习漫谈-10-Policy-Gradient/" class="leancloud_visitors" data-flag-title="强化学习漫谈 10：Policy Gradient">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<p>Value Function可以用参数化来回归，Policy $\pi(a|s)$ 能否也用参数化回归/拟合？如何通过梯度方法寻找最优策略？相比$\epsilon$-greedy的优点在哪里？</p>
+<h3 id="参数化拟合Policy-pi-a-s"><a href="#参数化拟合Policy-pi-a-s" class="headerlink" title="参数化拟合Policy $\pi(a|s)$"></a>参数化拟合Policy $\pi(a|s)$</h3><p>从前两章得到启发，既然值函数$v(s)$或者action value $q(s,a)$可以用函数来拟合，通过调整参数$w$来学习，我们是否也可以将策略$\pi(a|s)$用函数来拟合，通过调整参数$\theta$来寻找最优策略？策略拟合函数表达为$\pi(a|s,\theta)$，例如，对于离散化action，该函数可以用exponential softmax表达为：<br>\begin{equation}<br>\pi(a|s,\theta)=\frac{\exp(h(s,a,\theta))}{\sum_b\exp(h(s,b,\theta))}<br>\end{equation}<br>其中$h(s,a,\theta)$可以通过神经网络学习得到（这样上式其实就是一个多分类器的最后一个softmax FC层），也可以是特征的线性回归$h(s,a,\theta)=\theta^{\mathsf{T}}x(s,a)$。<br>对于连续的action空间，我们可以用一个连续的概率密度函数来表达$\pi(a|s,\theta)$，比如正态分布。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/28/强化学习漫谈-10-Policy-Gradient/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/27/强化学习漫谈-9-Off-Policy-Approximation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1613,150 +1765,6 @@ MathJax.Hub.Config({
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/09/强化学习漫谈-0-引子/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="刘志欣">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/09/强化学习漫谈-0-引子/" itemprop="url">强化学习漫谈 0: 引子</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-09T14:29:17+08:00">
-                2018-01-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/09/强化学习漫谈-0-引子/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/09/强化学习漫谈-0-引子/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018/01/09/强化学习漫谈-0-引子/" class="leancloud_visitors" data-flag-title="强化学习漫谈 0: 引子">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>强化学习从本质上来说，刻画的是Agent通过与环境Environment之间的尝试与调整，最终达到理想效果的学习过程。它可以解决某些场景下的动态规划DP问题，特别是在每一步的决策都是为了达成最终目标这一类“one step action, long term goal”的规划或者策略问题。从传统DP出发，强化学习发展出一些计算效率优化的方法，例如Bootstraping、Monte Carlo tree search等，其本质都是剪枝以提升效率，各种方法的区别在于是纵向（深度）的剪枝，还是横向（广度）的剪枝。</p>
-<p>回头仔细看看强化学习的完整体系，虽然它比DNN等Art更有数学上的逻辑性，但我们可以意识到里面还是有很多人为定义或者假设，或者可以说粗暴的地方，这也为我们进一步深入研究和改进以解决实际问题的方法提供了很多思路和空间。</p>
-<p>我们团队通过对物流行业一年多的学习，学习到很多这个行业的知识，也在这个行业内做了一些强化学习应用的探索。大家直观可以想到的是动态线路规划，以此为起点，我们也将继续将强化学习应用到更多资源优化、供应链管理等方向。这是一片充满想象的空间，May the in<strong>_force_</strong>ment be with you.</p>
-<p>这一系列漫谈基于Richard S. Sutton和Andrew G. Barto的《Reinforcement Learning: An Introduction》一书，但是不完全拘泥于书中的线索。因本人能力有限造成的错误理解之处，还请谅解并指出。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1807,7 +1815,7 @@ MathJax.Hub.Config({
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
