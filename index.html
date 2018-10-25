@@ -374,7 +374,7 @@ MathJax.Hub.Config({
 <li>对$Q^w$特别是$A^w$进行线性回归，表达能力偏弱，所以很可能收敛到局部极值，而不是全局最优点；</li>
 <li>Off-Policy下用线性回归做Q-Learning时，学习过程会diverge。论文中使用了gradient TD的方法，细节不详述，可以参见论文，基本思想是增加一个调节项使得参数更新得慢一些。</li>
 </ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>DPG最大的价值在于给出了确定性策略梯度的存在与表达，基于此我们可以用与前面介绍的方法类似的一些方法，比如Q-Learning, Actor-Critic等进行确定性策略的优化。要注意为了exploration，需要用随机的behavior policy生成样本，而target policy就是我们要优化的确定性策略。理论需要计算实际的Q值$Q^\mu(s,a)$，所以比较可行的on-line incremental的方法off-policy actor-critic。但是这个论文中使用的LR表达能力偏弱，所以具体的连续action空间下进行DPG还是需要使用后面会介绍的DDPG。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>DPG最大的价值在于给出了确定性策略梯度的存在与表达，基于此我们可以用类似前面介绍的一些方法，比如Q-Learning, Actor-Critic等进行确定性策略的优化。要注意为了exploration，需要off-policy地使用随机behavior policy生成样本。Deterministic Policy Gradient理论需要计算实际的Q值$Q^\mu(s,a)$，所以比较可行的on-line incremental的方法是off-policy actor-critic，用$Q^w$来近似$Q^\mu$，用TD error来更新actor与critic。但是，为了解决$Q^w$近似带来的diverge问题，论文中使用了LR作为$Q^w$的近似方法，其表达能力偏弱，所以具体的连续action空间下进行DPG还是需要使用后面会介绍的深度DPG方法：DDPG。</p>
 
           
         
