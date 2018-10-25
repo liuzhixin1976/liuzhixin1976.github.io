@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="About Learning">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   从随机策略到确定性策略，迈向了高维以致连续action空间的方法。论文 关于确定性策略梯度的疑问一个非常直观的猜想是，承接上一节的Policy Gredient方法，策略分布函数$\pi(a|s)$有一个初始分布，例如说正态分布$\mathca">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-25T00:21:41.991Z">
+<meta property="og:updated_time" content="2018-10-25T00:22:57.798Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="强化学习漫谈 11：Deterministic Policy Gradient (DPG)">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   从随机策略到确定性策略，迈向了高维以致连续action空间的方法。论文 关于确定性策略梯度的疑问一个非常直观的猜想是，承接上一节的Policy Gredient方法，策略分布函数$\pi(a|s)$有一个初始分布，例如说正态分布$\mathca">
@@ -348,7 +348,7 @@ MathJax.Hub.Config({
 </script>
 
 <p>从随机策略到确定性策略，迈向了高维以致连续action空间的方法。<a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Publications_files/deterministic-policy-gradients.pdf" target="_blank" rel="noopener">论文</a></p>
-<h3 id="关于确定性策略梯度的疑问"><a href="#关于确定性策略梯度的疑问" class="headerlink" title="关于确定性策略梯度的疑问"></a>关于确定性策略梯度的疑问</h3><p>一个非常直观的猜想是，承接上一节的Policy Gredient方法，策略分布函数$\pi(a|s)$有一个初始分布，例如说正态分布$\mathcal{N}(a,\sigma)$，然后我们通过Actor-Critic或者别的方法对这个策略进行逐渐优化，最终收敛到最优策略$\pi^\ast$，这个过程中策略分布函数应该逐步向最优策略演化，并且最优策略直观上应该是方差很小，聚焦于某个或某段确定的值，极端情况下收敛到确定的点成为确定策略。这种情况下最优策略分布集中的区域其方差通常很小（或者说概率函数很<em>陡峭</em>），因此无论$\nabla_\theta\pi(a|s,\theta)$还是$\nabla_\theta\ln\pi(a|s,\theta)$都很大，造成训练过程不稳定（参考一下狄拉克函数求导？）。因此上一节的Policy Gradient Theorem是不能推广到确定性策略梯度方法的。幸运的是，论文中的Deterministic Policy Gradient Theorem给出了确定策略梯度在理论上的支撑。</p>
+<h3 id="关于确定性策略梯度的疑问"><a href="#关于确定性策略梯度的疑问" class="headerlink" title="关于确定性策略梯度的疑问"></a>关于确定性策略梯度的疑问</h3><p>一个非常直观的猜想是，承接上一节的Policy Gredient方法，策略分布函数$\pi(a|s)$有一个初始分布，例如说正态分布$\mathcal{N}(a,\sigma)$，然后我们通过Actor-Critic或者别的方法对这个策略进行逐渐优化，最终收敛到最优策略$\pi^\ast$，这个过程中策略分布函数应该逐步向最优策略演化，并且最优策略直观上应该是方差很小，聚焦于某个或某段确定的值，极端情况下收敛到确定的点成为确定策略。这种情况下最优策略分布集中的区域其方差通常很小（或者说概率函数很<em>陡峭</em>），因此无论$\nabla_\theta\pi(a|s,\theta)$还是$\nabla_\theta\ln\pi(a|s,\theta)$都很大，造成训练过程不稳定（参考一下狄拉克函数求导？）。因此上一节的Policy Gradient Theorem是不能推广到确定性策略梯度方法的。幸运的是，论文中的Deterministic Policy Gradient Theorem给出了确定策略梯度在理论上的支撑。<br><a id="more"></a></p>
 <h3 id="理论支撑"><a href="#理论支撑" class="headerlink" title="理论支撑"></a>理论支撑</h3><p>Deterministic Policy Gradient Theorem给出，对于确定性策略 $a=\mu_\theta(s)$满足一定条件下，$\nabla_\theta\mu_\theta(s)$与$\nabla_a Q^\mu(s,a)$存在且：<br>\begin{eqnarray}<br>\nabla_\theta J(\mu_\theta)&amp;=&amp;\int_\mathcal{S}\rho^\mu(s)\nabla_\theta\mu_\theta(s)\nabla_a Q^\mu(s,a)\vert_{a=\mu_\theta(s)}ds\notag\\<br>&amp;=&amp;\mathbb{E}_{s\sim\rho^\mu}\bigg{[}\nabla_\theta\mu_\theta(s)\nabla_a Q^\mu(s,a)\vert_{a=\mu_\theta(s)}\bigg{]}\label{eqn_dpg_theorem}<br>\end{eqnarray}<br>上式中$\rho^\mu(s)$为按照策略$\mu$产生的状态的discounted分布。</p>
 <p>这个理论的sweet spot在于如下几点：</p>
 <ol>

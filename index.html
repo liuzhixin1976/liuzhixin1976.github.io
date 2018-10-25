@@ -340,43 +340,21 @@
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
 });
 </script>
 
 <p>从随机策略到确定性策略，迈向了高维以致连续action空间的方法。<a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Publications_files/deterministic-policy-gradients.pdf" target="_blank" rel="noopener">论文</a></p>
-<h3 id="关于确定性策略梯度的疑问"><a href="#关于确定性策略梯度的疑问" class="headerlink" title="关于确定性策略梯度的疑问"></a>关于确定性策略梯度的疑问</h3><p>一个非常直观的猜想是，承接上一节的Policy Gredient方法，策略分布函数$\pi(a|s)$有一个初始分布，例如说正态分布$\mathcal{N}(a,\sigma)$，然后我们通过Actor-Critic或者别的方法对这个策略进行逐渐优化，最终收敛到最优策略$\pi^\ast$，这个过程中策略分布函数应该逐步向最优策略演化，并且最优策略直观上应该是方差很小，聚焦于某个或某段确定的值，极端情况下收敛到确定的点成为确定策略。这种情况下最优策略分布集中的区域其方差通常很小（或者说概率函数很<em>陡峭</em>），因此无论$\nabla_\theta\pi(a|s,\theta)$还是$\nabla_\theta\ln\pi(a|s,\theta)$都很大，造成训练过程不稳定（参考一下狄拉克函数求导？）。因此上一节的Policy Gradient Theorem是不能推广到确定性策略梯度方法的。幸运的是，论文中的Deterministic Policy Gradient Theorem给出了确定策略梯度在理论上的支撑。</p>
-<h3 id="理论支撑"><a href="#理论支撑" class="headerlink" title="理论支撑"></a>理论支撑</h3><p>Deterministic Policy Gradient Theorem给出，对于确定性策略 $a=\mu_\theta(s)$满足一定条件下，$\nabla_\theta\mu_\theta(s)$与$\nabla_a Q^\mu(s,a)$存在且：<br>\begin{eqnarray}<br>\nabla_\theta J(\mu_\theta)&amp;=&amp;\int_\mathcal{S}\rho^\mu(s)\nabla_\theta\mu_\theta(s)\nabla_a Q^\mu(s,a)\vert_{a=\mu_\theta(s)}ds\notag\\<br>&amp;=&amp;\mathbb{E}_{s\sim\rho^\mu}\bigg{[}\nabla_\theta\mu_\theta(s)\nabla_a Q^\mu(s,a)\vert_{a=\mu_\theta(s)}\bigg{]}\label{eqn_dpg_theorem}<br>\end{eqnarray}<br>上式中$\rho^\mu(s)$为按照策略$\mu$产生的状态的discounted分布。</p>
-<p>这个理论的sweet spot在于如下几点：</p>
-<ol>
-<li>理论上确保并给出了确定性策略的梯度计算方法；</li>
-<li>对参数$\theta$进行梯度时，$\theta$的变化–&gt;$a=\mu_\theta(s)$的变化–&gt;$状态分布变化$, 但是该理论也指出了对于状态分布的求导是可以忽略的，因此$\theta$的更新与状态分布的变化无关。（这一点与随机策略梯度一致）</li>
-<li>参数改变的方向是action-value的梯度方向。直观上很容易理解：改变参数的目的是为了让action-value最大化。</li>
-<li>随机策略梯度方法中，参数$\theta$更新的方向是$\delta\nabla_\theta\ln\pi(a|s,\theta)$，计算是在$\mathcal{S}$和$\mathcal{A}$两个空间里进行的；而确定性策略梯度方法中，参数$\theta$更新的方向是$\nabla_\theta\mu_\theta(s)\nabla_a Q^\mu(s,a)\vert_{a=\mu_\theta(s)}$，主要在$\mathcal{A}$和参数空间中进行，因此对于高维以致连续的action空间，计算复杂度得以降低。</li>
-</ol>
-<h3 id="实际模型"><a href="#实际模型" class="headerlink" title="实际模型"></a>实际模型</h3><p>套用上述理论($\ref{eqn_dpg_theorem}$)，我们可以得到参数$\theta$的incremental更新方式：<br>\begin{equation}<br>\theta^{k+1}=\theta^k+\alpha\mathbb{E}_{s\sim\rho^{\mu^k}}\bigg{[}\nabla_\theta\mu_\theta(s)\nabla_a Q^{\mu^k}(s,a)\vert_{a=\mu_\theta(s)}\bigg{]}<br>\end{equation}</p>
-<p>上述理论中，我们需要求解实际action-value 函数$Q^\mu(s,a)$。在实际模型中，我们可以运用Actor-Critic方法进行近似。Actor-Critic方法的关键点在于：</p>
-<ol>
-<li>用参数化$Q^\color{red}{w}(s,a)$来近似$Q^\color{green}{\mu}(s,a)$;</li>
-<li>每一步计算TD error $\delta$并用在actor于critic中来更新策略参数$\theta$与action-value参数$w$。</li>
-</ol>
-<p>要注意的一点是，确定性策略下，无法进行有效的exploration，因此我们通常采用off-policy的方法，通过随机策略$\beta$生成样本进行exploration，对确定性策略$\mu(\theta)$进行学习和优化。在Off-Policy的设定下，需要优化的对象$J(\theta)$变成：target policy $\mu$的action-value函数，在behavior policy $\beta$的状态分布下的平均值，如下：<br>\begin{equation}<br>J_{\color{red}{\beta}}(\mu_\theta)=\int_{\mathcal{S}}{\color{red}{\rho^\beta(s)}}V^{\color{green}{\mu}}(s)ds=\int_{\mathcal{S}}{\color{red}{\rho^\beta(s)}}Q^\mu(s,{\color{green}{\mu_\theta(s)}})ds<br>\end{equation}<br>注意上式中$\color{red}{\beta}$表明是stochastic behavior policy，$\color{green}{\mu_\theta}$表明是deterministic target policy。</p>
-<p>Off-Policy deterministic actor-critic (OPDAC)如下：<br>\begin{eqnarray}<br>\delta_t&amp;=&amp;r_t+\gamma Q^w(s_{t+1},\mu_\theta(s_{t+1}))-Q^w(s_t,a_t)\\<br>w_{t+1}&amp;=&amp;w_t+\alpha_w\delta_t\nabla_wQ^w(s_t,a_t)\\<br>\theta_{t+1}&amp;=&amp;\theta_t+\alpha_\theta\nabla_\theta\mu_\theta(s_t)\nabla_aQ^w(s_t,a_t)\vert_{a=\mu_\theta(s)}<br>\end{eqnarray}<br>其中第一行为计算TD Error，这里用bootstrapping的方法，用$Q^w$来近似$Q^\mu$；第二行是基于TD Error来更新$Q^w$的参数$w$；第三行是更新确定性策略参数$\theta$，与(\ref{eqn_dpg_theorem})的区别在于，此处用$Q^w$来代替实际$Q^\mu$。</p>
-<p>注意这里没有通常意义上Off-Policy需要的importance sampling ratio，究其根本原因还是在于确定性策略不存在概率分布$\pi(a|s)$。</p>
-<p>还有一个需要注意的点，在于Off-Policy下使用TD，会带来$Q$梯度的偏差(biased)。所幸该论文中提供了一种compatible function approximation，确保$Q$的梯度不会随着近似而偏掉。理论表达和证明略过，下面是compatible function approximation 的表达：</p>
-<p>\begin{eqnarray}<br>Q^w(s,a)&amp;=&amp;\color{red}{(a-\mu_\theta(s))^T\nabla_\theta\mu_\theta(s)^T}w+\color{green}{V^v(s)}\notag\\<br>&amp;=&amp;\color{red}{\phi(s,a)^T}w+\color{green}{V^v(s)}<br>\end{eqnarray}<br>这里可以将$Q^w(s,a)$看做state value approximation $V^v(s)$与Advantage approximation $A^w(s,a)=\phi(s,a)^Tw=(a-\mu_\theta(s))^T\nabla_\theta\mu_\theta(s)^Tw$之和。其中Advantage approximation $A^w(s,a)$是基于特征$\phi(s,a)$的线性回归，而优化目标(根据论文中的定理)是最小化$Q^w$与$Q^\mu$的梯度之差（用欧氏距离的平均值衡量）如下：<br>\begin{equation}<br>MSE(\theta,w)=\mathbb{E}[\epsilon(s;\theta,w)^T\epsilon(s;\theta,w)]<br>\end{equation}<br>where $\epsilon(s;\theta,w)=\nabla_aQ^w(s,a)\vert_{a=\mu_\theta(s)}-\nabla_aQ^\mu(s,a)\vert_{a=\mu_\theta(s)}$。</p>
-<p>对于$V^v(s)$，我们以简单的线性回归为例，$V^v(s)=v^T\psi(s)$，可以得到：<br>\begin{eqnarray}<br>\nabla_aQ^w(s,a)&amp;=&amp;\nabla_\theta\mu_\theta(s)^Tw\notag\\<br>\nabla_wQ^w(s,a)&amp;=&amp;\phi(s,a)\notag\\<br>\nabla_vQ^w(s,a)&amp;=&amp;\psi(s)<br>\end{eqnarray}<br>由此我们得到compatible off-policy deterministic actor-critic (COPDAC)如下：<br>\begin{eqnarray}<br>\delta_t&amp;=&amp;r_t+\gamma Q^w(s_{t+1},\mu_\theta(s_{t+1}))-Q^w(s_t,a_t)\notag\\<br>\theta_{t+1}&amp;=&amp;\theta_t+\alpha_\theta\nabla_\theta\mu_\theta(s_t)(\nabla_\theta\mu_\theta(s_t)^Tw_t)\notag\\<br>w_{t+1}&amp;=&amp;w_t+\alpha_w\delta_t\phi(s_t,a_t)\notag\\<br>v_{t+1}&amp;=&amp;v_t+\alpha_v\delta_t\psi(s_t)<br>\end{eqnarray}</p>
-<p>上面的方法有两个问题：</p>
-<ol>
-<li>对$Q^w$特别是$A^w$进行线性回归，表达能力偏弱，所以很可能收敛到局部极值，而不是全局最优点；</li>
-<li>Off-Policy下用线性回归做Q-Learning时，学习过程会diverge。论文中使用了gradient TD的方法，细节不详述，可以参见论文，基本思想是增加一个调节项使得参数更新得慢一些。</li>
-</ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>DPG最大的价值在于给出了确定性策略梯度的存在与表达，基于此我们可以用类似前面介绍的一些方法，比如Q-Learning, Actor-Critic等进行确定性策略的优化。要注意为了exploration，需要off-policy地使用随机behavior policy生成样本。Deterministic Policy Gradient理论需要计算实际的Q值$Q^\mu(s,a)$，所以比较可行的on-line incremental的方法是off-policy actor-critic，用$Q^w$来近似$Q^\mu$，用TD error来更新actor与critic。但是，为了解决$Q^w$近似带来的diverge问题，论文中使用了LR作为$Q^w$的近似方法，其表达能力偏弱，所以具体的连续action空间下进行DPG还是需要使用后面会介绍的深度DPG方法：DDPG。</p>
-
-          
+<h3 id="关于确定性策略梯度的疑问"><a href="#关于确定性策略梯度的疑问" class="headerlink" title="关于确定性策略梯度的疑问"></a>关于确定性策略梯度的疑问</h3><p>一个非常直观的猜想是，承接上一节的Policy Gredient方法，策略分布函数$\pi(a|s)$有一个初始分布，例如说正态分布$\mathcal{N}(a,\sigma)$，然后我们通过Actor-Critic或者别的方法对这个策略进行逐渐优化，最终收敛到最优策略$\pi^\ast$，这个过程中策略分布函数应该逐步向最优策略演化，并且最优策略直观上应该是方差很小，聚焦于某个或某段确定的值，极端情况下收敛到确定的点成为确定策略。这种情况下最优策略分布集中的区域其方差通常很小（或者说概率函数很<em>陡峭</em>），因此无论$\nabla_\theta\pi(a|s,\theta)$还是$\nabla_\theta\ln\pi(a|s,\theta)$都很大，造成训练过程不稳定（参考一下狄拉克函数求导？）。因此上一节的Policy Gradient Theorem是不能推广到确定性策略梯度方法的。幸运的是，论文中的Deterministic Policy Gradient Theorem给出了确定策略梯度在理论上的支撑。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/10/24/强化学习漫谈-11-DPG/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
