@@ -79,18 +79,23 @@
 
 
 
-<meta name="description" content="强化学习的问题描述参见下图：Agent在当前状态State下通过与环境Environment交互，对环境进行动作Action，从环境处得到反馈Reward，并且进入下一个状态State。如果把这一系列交互在时间轴上拉开，在每个时间点$t$，Agent在状态$S_t$下，对环境进行动作$A_t$，得到环境的反馈$R_t$，并且自身状态变成$S_{t+1}$   我们在面临应用强化学习解决现实问题的时">
+<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   Going Deep。DQN论文1、论文2; DDPG论文；A3C论文。 DQN：Deep Q Learning在Function Approximation中，我们希望得到的是模型的表达能力和泛化能力；另一方面，当状态数据来自于图像、视频、声">
 <meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强化学习漫谈 1: MDP">
-<meta property="og:url" content="http://yoursite.com/2018/01/11/强化学习漫谈-1-MDP/index.html">
+<meta property="og:title" content="强化学习漫谈12：DQN、DDPG、A3C">
+<meta property="og:url" content="http://yoursite.com/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/index.html">
 <meta property="og:site_name" content="About Learning">
-<meta property="og:description" content="强化学习的问题描述参见下图：Agent在当前状态State下通过与环境Environment交互，对环境进行动作Action，从环境处得到反馈Reward，并且进入下一个状态State。如果把这一系列交互在时间轴上拉开，在每个时间点$t$，Agent在状态$S_t$下，对环境进行动作$A_t$，得到环境的反馈$R_t$，并且自身状态变成$S_{t+1}$   我们在面临应用强化学习解决现实问题的时">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   Going Deep。DQN论文1、论文2; DDPG论文；A3C论文。 DQN：Deep Q Learning在Function Approximation中，我们希望得到的是模型的表达能力和泛化能力；另一方面，当状态数据来自于图像、视频、声">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-17T13:03:09.813Z">
+<meta property="og:image" content="http://yoursite.com/images/DQN.png">
+<meta property="og:image" content="http://yoursite.com/images/dqn_algo.png">
+<meta property="og:image" content="http://yoursite.com/images/ddpg.png">
+<meta property="og:image" content="http://yoursite.com/images/a3c.png">
+<meta property="og:updated_time" content="2018-10-27T17:22:33.896Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="强化学习漫谈 1: MDP">
-<meta name="twitter:description" content="强化学习的问题描述参见下图：Agent在当前状态State下通过与环境Environment交互，对环境进行动作Action，从环境处得到反馈Reward，并且进入下一个状态State。如果把这一系列交互在时间轴上拉开，在每个时间点$t$，Agent在状态$S_t$下，对环境进行动作$A_t$，得到环境的反馈$R_t$，并且自身状态变成$S_{t+1}$   我们在面临应用强化学习解决现实问题的时">
+<meta name="twitter:title" content="强化学习漫谈12：DQN、DDPG、A3C">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   Going Deep。DQN论文1、论文2; DDPG论文；A3C论文。 DQN：Deep Q Learning在Function Approximation中，我们希望得到的是模型的表达能力和泛化能力；另一方面，当状态数据来自于图像、视频、声">
+<meta name="twitter:image" content="http://yoursite.com/images/DQN.png">
 
 
 
@@ -120,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/11/强化学习漫谈-1-MDP/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/"/>
 
 
 
 
 
-  <title>强化学习漫谈 1: MDP | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>强化学习漫谈12：DQN、DDPG、A3C | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -253,7 +258,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/强化学习漫谈-1-MDP/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="刘志欣">
@@ -270,7 +275,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强化学习漫谈 1: MDP</h1>
+          <h1 class="post-title" itemprop="name headline">强化学习漫谈12：DQN、DDPG、A3C</h1>
         
 
         <div class="post-meta">
@@ -282,8 +287,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-11T18:02:14+08:00">
-                2018-01-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-26T23:06:31+08:00">
+                2018-10-26
               </time>
             
 
@@ -301,8 +306,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/11/强化学习漫谈-1-MDP/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/11/强化学习漫谈-1-MDP/" itemprop="commentCount"></span>
+                <a href="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -310,7 +315,7 @@
 
           
           
-             <span id="/2018/01/11/强化学习漫谈-1-MDP/" class="leancloud_visitors" data-flag-title="强化学习漫谈 1: MDP">
+             <span id="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/" class="leancloud_visitors" data-flag-title="强化学习漫谈12：DQN、DDPG、A3C">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -341,17 +346,48 @@
       
 
       
-        <p>强化学习的问题描述参见下图：Agent在当前状态State下通过与环境Environment交互，对环境进行动作Action，从环境处得到反馈Reward，并且进入下一个状态State。如果把这一系列交互在时间轴上拉开，在每个时间点$t$，Agent在状态$S_t$下，对环境进行动作$A_t$，得到环境的反馈$R_t$，并且自身状态变成$S_{t+1}$</p>
-<p align="center"><br><div id="sequence-0"></div><br></p>
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
 
-<p>我们在面临应用强化学习解决现实问题的时候，首先要明确的就是边界问题：Agent是什么？环境是什么？如何定义状态？环境的反馈Reward如何定义？等等。首先Agent的主动权在于选择动作，环境的主动权在于对状态和动作的反馈。例如，一道思考题：如果我们抽象如下问题，调整价格如何影响销量，以及销量如何反过来指导价格，在这个抽象模型中，Agent是什么？环境是什么？再进一步，价格调整之后，客户购买这一商品的目的不再是为了满足当前状态下的需要，反而是对价格变动这一Action进行的Reward（例如，囤货行为），那么Agent与环境又分别是什么？搞清问题目标和边界永远是最重要的。<br><a id="more"></a><br>我们继续回到这个问题描述中，如果Agent的状态存在Markov性，那么我们把时间轴上的这一系列交互称为Markov Decision Process (MDP)。基于此，MDP可以用如下条件概率来表示</p>
-<p>$$<br>p(s^\prime,r|s,a) = Pr(S_{t+1}=s^\prime,R_{t+1}=r|S_t=s,A_t=a)<br>$$</p>
-<p>这个条件概率可以玩很多东西，例如，state-action对的回报期望值(expected rewards)为</p>
-<p>$$<br>r(s,a)=\mathbb{E}(R_{t+1}|S_t=s,A_t=a)=\sum \limits_{r\in \mathcal{R}}r\sum \limits_{s^\prime\in\mathcal{S}}p(s^\prime,r|s,a)<br>$$</p>
-<p>再比如，状态转移概率为</p>
-<p>$$<br>p(s^{\prime}|s,a)=Pr(S_{t+1}=s^\prime|S_t=s,A_t=a)=\sum \limits_{r\in\mathcal{R}}p(s^\prime,r|s,a)<br>$$</p>
-<p><script src="https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js"></script><script src="https://cdn.bootcss.com/raphael/2.2.7/raphael.min.js"></script><script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore-min.js"></script><script src="https://cdn.bootcss.com/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script><textarea id="sequence-0-code" style="display: none">​Agent(State at t)->Env: action at t
-Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options" style="display: none">{"theme":"simple"}</textarea><script>  var code = document.getElementById("sequence-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("sequence-0-options").value));  var diagram = Diagram.parse(code);  diagram.drawSVG("sequence-0", options);</script></p>
+<p>Going Deep。DQN<a href="https://arxiv.org/abs/1312.5602" target="_blank" rel="noopener">论文1</a>、<a href="https://www.nature.com/articles/nature14236" target="_blank" rel="noopener">论文2</a>; DDPG<a href="https://arxiv.org/abs/1509.02971" target="_blank" rel="noopener">论文</a>；A3C<a href="https://arxiv.org/abs/1602.01783" target="_blank" rel="noopener">论文</a>。</p>
+<h3 id="DQN：Deep-Q-Learning"><a href="#DQN：Deep-Q-Learning" class="headerlink" title="DQN：Deep Q Learning"></a>DQN：Deep Q Learning</h3><p>在Function Approximation中，我们希望得到的是模型的表达能力和泛化能力；另一方面，当状态数据来自于图像、视频、声音等原始数据时，我们也希望增强模型的特征提取能力，减少人工特征工程。因此运用深度学习对强化学习中的value function、policy function进行端到端的approximation，成为一个有趣的选项。</p>
+<p>然而不做任何trick地直接应用深度学习，存在如下问题：</p>
+<ol>
+<li>强化学习中的return计算通常相对当前的time step而言有延迟，即使是Bootstrapping，也会有n-step的延迟。</li>
+<li>深度学习的训练样本需要独立同分布i.i.d，而强化学习的状态、回报等都有很强的前后相关性。</li>
+<li>深度学习适用于数据的概率分布是平稳(stationary)的情况，而强化学习中，策略提升(policy improvement)会带来状态分布的变化，有时候在参数BP的过程中，策略参数$\theta$的变化会带来状态分布的很大的变化，从而使训练过程震荡或者diverge。</li>
+</ol>
+<p>因此上面提到的两篇论文针对上面这三个问题，提出了实际工程实现时的一些办法：<br><a id="more"></a></p>
+<ol>
+<li>定义event $e_t=(s_t, a_t, r_t, s_{t+1})$，当agent play with environment的episodes过程中，将$e_t$记录到一个大的buffer中，然后在训练过程中随机的选取$e_i$进行mini-batch，这样可以打破训练样本的前后相关性，也构造了mini batch提升训练效率。这种方法称为Experience Replay。要注意experience replay的引入使得训练是off-policy的。后面的A3C采取了不同的思路和办法来构造mini-batch。</li>
+<li>对于图像、视频等数据量大、冗余信息多的原始数据，进行preprocessing减少运算量，例如cropping, down sampling, Gray-scale等。</li>
+<li>为解决上述的non-stationary问题，我们希望target policy的变化相对慢一些，所以可以使用如下的Q Learning的Loss function:<br>\begin{equation}<br>L_i(\theta_i)=\mathbb{E}_{(s,a,r,s^\prime)\sim U(D)}\bigg{[}\bigg{(}r+\gamma\max_{a^\prime}Q(s^\prime, a^\prime; \color{red}{\theta_i^-})-Q(s,a;\color{green}{\theta_i})\bigg{)}^2\bigg{]}<br>\end{equation}<br>其中$\color{red}{\theta^-}$称为target network parameter，它会定期的更新为$\color{green}{\theta}$。</li>
+<li>其他的一些具体细节：比如，使用RMSProp进行训练；将回报reward的范围限制在区间[-1,1]内；跳帧减少计算量；对于replay buffer，可以考虑不是按照均匀分布进行随机抽样，而是参考前面介绍的prioritized sweeping等。</li>
+</ol>
+<p>下图是一个DQN的示例，输入是$e_t=(s_t, a_t, r_t, s_{t+1})$，其中$s$均为经过预处理的原始图像；输出是各个action对应的Q值。<br><img src="/images/DQN.png" alt=""></p>
+<p>以及DQN的算法伪代码如下：<br><img src="/images/dqn_algo.png" alt=""></p>
+<h3 id="DDPG-Deep-Deterministic-Policy-Gradient"><a href="#DDPG-Deep-Deterministic-Policy-Gradient" class="headerlink" title="DDPG: Deep Deterministic Policy Gradient"></a>DDPG: Deep Deterministic Policy Gradient</h3><p>基本思路是将DPG的actor-critic方法与上面的DQN结合，其中actor的policy network以及critic中的Q network都是神经网络，这样提高了模型的表达能力。具体使用的一些细节如下：</p>
+<ol>
+<li>使用replay buffer进行experience replay。因为DDPG是off-policy的，所以我们希望replay buffer能容量大一些，包含更多的样本。</li>
+<li>与DQN类似，使用target Q network $\theta^-$；与DQN不同的是，target Q network不是每隔一段时间完全更新为learning network，而是每隔一段时间进行<em>soft</em>的更新：$\theta^\prime\leftarrow\tau\theta+(1-\tau)\theta^\prime$。这样虽然训练得慢一些，但是能确保一些stability。</li>
+<li>对于低维的特征向量，不同的成分代表了不同的物理含义，比如速度、位置等。这些不同的成分也有不同的取值范围，如何让模型对这些多成分的输入进行更有效的训练？DDPG中采用了batch normalization。</li>
+<li>对于DPG一个重要的考虑点就是如何进行exploration（因为我们的target policy是确定性的）。DDPG采用的方法是在确定性策略网络上加上一个噪声，进行exploration。$\mu^\prime(s_t)=\mu(s_t|\theta_t^\mu)+\mathcal{N}$。</li>
+</ol>
+<p>DDPG算法伪代码如下：<br><img src="/images/ddpg.png" alt=""></p>
+<h3 id="A3C-Asynchronous-Advantage-Actor-Critic"><a href="#A3C-Asynchronous-Advantage-Actor-Critic" class="headerlink" title="A3C: Asynchronous Advantage Actor-Critic"></a>A3C: Asynchronous Advantage Actor-Critic</h3><p>A3C的基本思路也是为了解决前面提到的几个问题例如训练样本前后相关性强，模型变化造成数据分布不平稳（nonstationary）等问题。相对于DQN的experience replay的方法，A3C用了另外的思路：</p>
+<ol>
+<li>多线程并行，每个线程都有一个agent以及独自的environment拷贝；</li>
+<li>训练的稳定性也是通过mini batch来实现的，不同于experience replay，A3C的mini batch来自于时间轴上的参数梯度累加。（参见算法伪代码）</li>
+<li>因为没有experience replay，所以不像DQN那样被限制在Q Learning这样的off-policy。它可以是on-policy (Sarsa)，也可以是off-policy（Q Learning），或者是actor-critic这样的框架。</li>
+<li>Actor-Critic的框架里需要注意一个细节：因为需要时间轴上的参数梯度累加来实现mini batch，所以actor-critic所需要的TD error实际上是n-step的TD error。细节可以参见后面的算法伪代码。</li>
+<li>类似DQN，这里也使用shared and slowly changing target network。</li>
+<li>Loss function的设计上，为了防止收敛到sub-optimal的确定性策略，loss function加上了策略的熵 Entropy，表达如下：$\nabla_\theta J(\theta)=\nabla_\theta\log\pi(a_t|s_t;\theta)(R_t-V(s_t;\theta_v))+\beta\nabla_\theta H(\pi(s_t;\theta))$</li>
+<li>不同线程的agent可以使用不同的随机取值的$\epsilon$进行$\epsilon$-greedy，从而使整体的exploration更加有效。</li>
+</ol>
+<p>算法伪代码如下：<br><img src="/images/a3c.png" alt=""></p>
 
       
     </div>
@@ -382,8 +418,8 @@ Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/09/强化学习漫谈-0-引子/" rel="next" title="强化学习漫谈 0: 引子">
-                <i class="fa fa-chevron-left"></i> 强化学习漫谈 0: 引子
+              <a href="/2018/10/24/强化学习漫谈-11-DPG/" rel="next" title="强化学习漫谈 11：Deterministic Policy Gradient (DPG)">
+                <i class="fa fa-chevron-left"></i> 强化学习漫谈 11：Deterministic Policy Gradient (DPG)
               </a>
             
           </div>
@@ -391,10 +427,6 @@ Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/12/强化学习漫谈-2-Value/" rel="prev" title="强化学习漫谈 2: Value">
-                强化学习漫谈 2: Value <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -449,8 +481,17 @@ Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -501,6 +542,22 @@ Env->Agent(State at t+1): reward at t</textarea><textarea id="sequence-0-options
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DQN：Deep-Q-Learning"><span class="nav-number">1.</span> <span class="nav-text">DQN：Deep Q Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DDPG-Deep-Deterministic-Policy-Gradient"><span class="nav-number">2.</span> <span class="nav-text">DDPG: Deep Deterministic Policy Gradient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A3C-Asynchronous-Advantage-Actor-Critic"><span class="nav-number">3.</span> <span class="nav-text">A3C: Asynchronous Advantage Actor-Critic</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

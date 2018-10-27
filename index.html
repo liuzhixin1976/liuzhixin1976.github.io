@@ -249,6 +249,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="刘志欣">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="About Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/" itemprop="url">强化学习漫谈12：DQN、DDPG、A3C</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-26T23:06:31+08:00">
+                2018-10-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/" class="leancloud_visitors" data-flag-title="强化学习漫谈12：DQN、DDPG、A3C">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<p>Going Deep。DQN<a href="https://arxiv.org/abs/1312.5602" target="_blank" rel="noopener">论文1</a>、<a href="https://www.nature.com/articles/nature14236" target="_blank" rel="noopener">论文2</a>; DDPG<a href="https://arxiv.org/abs/1509.02971" target="_blank" rel="noopener">论文</a>；A3C<a href="https://arxiv.org/abs/1602.01783" target="_blank" rel="noopener">论文</a>。</p>
+<h3 id="DQN：Deep-Q-Learning"><a href="#DQN：Deep-Q-Learning" class="headerlink" title="DQN：Deep Q Learning"></a>DQN：Deep Q Learning</h3><p>在Function Approximation中，我们希望得到的是模型的表达能力和泛化能力；另一方面，当状态数据来自于图像、视频、声音等原始数据时，我们也希望增强模型的特征提取能力，减少人工特征工程。因此运用深度学习对强化学习中的value function、policy function进行端到端的approximation，成为一个有趣的选项。</p>
+<p>然而不做任何trick地直接应用深度学习，存在如下问题：</p>
+<ol>
+<li>强化学习中的return计算通常相对当前的time step而言有延迟，即使是Bootstrapping，也会有n-step的延迟。</li>
+<li>深度学习的训练样本需要独立同分布i.i.d，而强化学习的状态、回报等都有很强的前后相关性。</li>
+<li>深度学习适用于数据的概率分布是平稳(stationary)的情况，而强化学习中，策略提升(policy improvement)会带来状态分布的变化，有时候在参数BP的过程中，策略参数$\theta$的变化会带来状态分布的很大的变化，从而使训练过程震荡或者diverge。</li>
+</ol>
+<p>因此上面提到的两篇论文针对上面这三个问题，提出了实际工程实现时的一些办法：<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/24/强化学习漫谈-11-DPG/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1611,164 +1770,6 @@ MathJax.Hub.Config({
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/12/强化学习漫谈-2-Value/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="刘志欣">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="About Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/12/强化学习漫谈-2-Value/" itemprop="url">强化学习漫谈 2: Value</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T21:46:04+08:00">
-                2018-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/12/强化学习漫谈-2-Value/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/12/强化学习漫谈-2-Value/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018/01/12/强化学习漫谈-2-Value/" class="leancloud_visitors" data-flag-title="强化学习漫谈 2: Value">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
-
-<p>终于来到了Value与Return的话题。经典的教材都会先定义Return as</p>
-<p>\begin{equation}<br>G_t=\sum_{k=0}^{T-t-1}\gamma^kR_{t+k+1}<br>\label{eq2:ret_func}<br>\end{equation}</p>
-<p>其中$T=\infty$代表 <em>continuing task</em>, $T&lt;\infty$代表 <em>episodic task</em>, $\gamma$为discount rate，如果为1则表示没有discount。</p>
-<p>但是让我们后退一步，先不要限定Return的定义。这么做有两个原因：</p>
-<blockquote>
-<p>1, $\eqref{eq2:ret_func}$只是可能的Return的一种形式，我们可能会面对其他的Return定义形式；<br>2，Return也不一定是一个标量，也有可能是一个向量。</p>
-</blockquote>
-<p>所以我们先不要完全限定Return的表现形式，而是做一个合乎直觉也方便我们继续进行下去的假设，可以称之为 <em>独立可加</em> 假设:<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/12/强化学习漫谈-2-Value/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1819,7 +1820,7 @@ MathJax.Hub.Config({
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
