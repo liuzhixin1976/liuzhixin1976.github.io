@@ -249,6 +249,152 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/04/强化学习漫谈-4-蒙特卡洛法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="刘志欣">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="About Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/" itemprop="url">强化学习漫谈 4: 蒙特卡洛法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-04T21:32:21+08:00">
+                2018-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/" class="leancloud_visitors" data-flag-title="强化学习漫谈 4: 蒙特卡洛法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="Monte-Carlo-Prediction-Estimation"><a href="#Monte-Carlo-Prediction-Estimation" class="headerlink" title="Monte Carlo Prediction/Estimation"></a>Monte Carlo Prediction/Estimation</h3><p>DP很好很强大，然而DP需要环境的完整知识$p(s^\prime, r|s,a)$，在很多实际场景中这个变量是未知或者至少不完全已知的，因此要求我们有别的办法来估算值函数，并进一步进行策略的优化。考虑到值函数的定义是一个数学期望，在概率分布未知的情况下进行数学期望的估算，最经典最直接的办法就是Monte-Carlo法：进行充足的实验，用采样+值平均的办法来逼近数学期望，从而不依赖于概率分布的显示表达。</p>
+<p>使用蒙特卡洛法进行数学期望的估算，首先要意识到，每次估算的结果只有在进行足够的试验之后才能得出，而MDP的场景中，“试验的每一步”意味着从某一个状态开始，模拟$a$仿真得到$r$与下一步状态$s^\prime$，“充足的试验”则意味着从初始状态$s_0$开始，经历每一步状态流转，直到结束状态terminal state，这也意味了两点：<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/04/强化学习漫谈-4-蒙特卡洛法/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/23/强化学习漫谈-3-DP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1034,7 +1180,7 @@ MathJax.Hub.Config({
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
