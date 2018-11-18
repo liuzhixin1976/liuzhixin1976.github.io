@@ -79,21 +79,18 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？ Prioritized Sweeping and Model Learning在Model-free的假设下，无论Monte-Carlo法还是TD都是通">
+<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   前面介绍了强化学习大致的理论框架和实际使用的一些方法，这个体系都是围绕着agent对environment进行观察、动作、得到反馈这样的交互方式来进行的。我们把这个问题的适用范围进一步扩大，如果有多个agent同时对environment进行观">
 <meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强化学习漫谈 7：剪枝与Planning">
-<meta property="og:url" content="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/index.html">
+<meta property="og:title" content="强化学习漫谈 13：Multi Agent RL 之一">
+<meta property="og:url" content="http://yoursite.com/2018/11/18/强化学习漫谈-13-Multi-Agent-1/index.html">
 <meta property="og:site_name" content="About Learning">
-<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？ Prioritized Sweeping and Model Learning在Model-free的假设下，无论Monte-Carlo法还是TD都是通">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   前面介绍了强化学习大致的理论框架和实际使用的一些方法，这个体系都是围绕着agent对environment进行观察、动作、得到反馈这样的交互方式来进行的。我们把这个问题的适用范围进一步扩大，如果有多个agent同时对environment进行观">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/heuristic_search.png">
-<meta property="og:image" content="http://yoursite.com/images/mcts.png">
-<meta property="og:updated_time" content="2018-09-19T04:04:18.873Z">
+<meta property="og:updated_time" content="2018-11-18T13:00:07.155Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="强化学习漫谈 7：剪枝与Planning">
-<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？ Prioritized Sweeping and Model Learning在Model-free的假设下，无论Monte-Carlo法还是TD都是通">
-<meta name="twitter:image" content="http://yoursite.com/images/heuristic_search.png">
+<meta name="twitter:title" content="强化学习漫谈 13：Multi Agent RL 之一">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   前面介绍了强化学习大致的理论框架和实际使用的一些方法，这个体系都是围绕着agent对environment进行观察、动作、得到反馈这样的交互方式来进行的。我们把这个问题的适用范围进一步扩大，如果有多个agent同时对environment进行观">
 
 
 
@@ -123,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/11/18/强化学习漫谈-13-Multi-Agent-1/"/>
 
 
 
 
 
-  <title>强化学习漫谈 7：剪枝与Planning | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>强化学习漫谈 13：Multi Agent RL 之一 | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -256,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/19/强化学习漫谈-7-剪枝与Planning/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/18/强化学习漫谈-13-Multi-Agent-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="刘志欣">
@@ -273,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强化学习漫谈 7：剪枝与Planning</h1>
+          <h1 class="post-title" itemprop="name headline">强化学习漫谈 13：Multi Agent RL 之一</h1>
         
 
         <div class="post-meta">
@@ -285,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-19T10:05:29+08:00">
-                2018-09-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-18T00:22:34+08:00">
+                2018-11-18
               </time>
             
 
@@ -304,8 +301,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/09/19/强化学习漫谈-7-剪枝与Planning/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/19/强化学习漫谈-7-剪枝与Planning/" itemprop="commentCount"></span>
+                <a href="/2018/11/18/强化学习漫谈-13-Multi-Agent-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/18/强化学习漫谈-13-Multi-Agent-1/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -313,7 +310,7 @@
 
           
           
-             <span id="/2018/09/19/强化学习漫谈-7-剪枝与Planning/" class="leancloud_visitors" data-flag-title="强化学习漫谈 7：剪枝与Planning">
+             <span id="/2018/11/18/强化学习漫谈-13-Multi-Agent-1/" class="leancloud_visitors" data-flag-title="强化学习漫谈 13：Multi Agent RL 之一">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -350,23 +347,39 @@ MathJax.Hub.Config({
 });
 </script>
 
-<p>在我们学习了Model后，我们就有了整棵树，那么可以如何通过恰当的剪枝简化我们的训练过程？</p>
-<h3 id="Prioritized-Sweeping-and-Model-Learning"><a href="#Prioritized-Sweeping-and-Model-Learning" class="headerlink" title="Prioritized Sweeping and Model Learning"></a>Prioritized Sweeping and Model Learning</h3><p>在Model-free的假设下，无论Monte-Carlo法还是TD都是通过实验持续的估计并逼近value function，这样会有一些缺乏目标性。直观的说，我们应该更关注value变化大的$(s,a)$ pair，以及它的前序pair，因为任何pair的值函数的改变，都会back up到前序pair，这个值变化越大，对前序的状态下值的改变也越大，因此也越值得我们关注。具体的做法是：对于所有的$(s,a)$ pair，我们定义它的状态更新优先级；如果是deterministic policy，那么value的改变就是这个优先级，值改变越大的pair，其前馈back up的优先级越高；如果是stochastic policy，也就是存在$\pi(a|s)$概率，那么要综合考虑pair的值改变大小与这个概率大小；一旦确定了这个前馈back up的优先级，那么就建立一个优先级队列，每次更新值函数的时候，如果这个对应的优先级超过一定阈值，就把它插入到优先级队列的相应位置，然后按照优先级队列进行依次back up。<br><a id="more"></a></p>
-<p>需要注意的一点是，我们之前讨论的back up算法都是，对每个$(s,a)$ pair，进行试验或者推演，知道它的后续状态，然后把后续状态对应的$(s,a)$ pair value back-up到当前的值函数，这是一个向后看的过程；但是我们做Prioritized Sweeping的时候，是知道了某个后面的值得关注的状态，需要向前看，逐步back-up到前序状态去 (称为$\textit{backward focusing}$)。因此我们需要学习model，也就是在每一次向后看的过程中，把$(S_k,A_k)\rightarrow (S_{k+1}, R_{k+1})$记录在一个表里。一旦把这个表建立起来了，我们就学习到了整个model $p(s^\prime,r|s,a)$。</p>
-<p>Model Learning和Prioritized Sweeping可以是一个互相交织交替前进的过程。同时Prioritized Sweeping也是一个剪枝过程（backwards focusing），更关注需要关注的状态（高优先级的），同时减掉没有值函数变化的分支。</p>
-<h3 id="Heuristic-Search"><a href="#Heuristic-Search" class="headerlink" title="Heuristic Search"></a>Heuristic Search</h3><p>通过Model Learning 我们建立了$(s,a)\rightarrow (s^\prime, r)$这个表后，我们实际上就可以张开一棵完整的S-&gt;A-&gt;S-&gt;A-&gt;S的树了。当action-state value不准确的时候（例如，TD是逐渐逼近收敛到准确值的，在这个过程中value值是不准确的），我们在这棵树下面探索的越深，得到的策略就越靠近最优策略。最极端的情况是MC，虽然不知道整棵树，但是通过持续的实验，每次实验都会走到episode termination，这样得到的单个episode的Return G是准确的，所以平均之后就可以获取最佳的策略。但是在这棵树上探索很深的话必然带来计算量的急剧增大。</p>
-<p>因此Heuristic Search的基本思想就是：通过Model Learning构建S-&gt;A-&gt;S-&gt;A-&gt;S的树，在这棵树上只关注当前状态和它的可能后续状态，也就是每次back up只通过当前节点的下一级来Bootstrap；但是通过递归的方法将每一次的back up深入到最终的叶子节点或者value变化（通过discount后）低于某个阈值。</p>
-<p>如下图所事，我们对这棵搜索树进行深度优先遍历DFS，然后按照遍历的顺序反向backup，每次backup只关注当前节点和它的可能子节点。在这个过程中可以不断做剪枝。注意图中back up的顺序实际就是DFS的遍历顺序。<br><img src="/images/heuristic_search.png" alt=""></p>
-<h3 id="蒙特卡洛树搜索-MCTS"><a href="#蒙特卡洛树搜索-MCTS" class="headerlink" title="蒙特卡洛树搜索 MCTS"></a>蒙特卡洛树搜索 MCTS</h3><p>MCTS是结合了树搜索和Monte-Carlo方法的一种搜索树剪枝与back up的方法。如下图所示，MCTS有4个步骤：</p>
+<p>前面介绍了强化学习大致的理论框架和实际使用的一些方法，这个体系都是围绕着agent对environment进行观察、动作、得到反馈这样的交互方式来进行的。我们把这个问题的适用范围进一步扩大，如果有多个agent同时对environment进行观察、动作、得到反馈；如果这多个agent或者互相协助，或者互相竞争，或者互相博弈；如果这些agent对环境本身没有全貌的观察；如果每个agent的Q value受到其他agent的影响；… …；我们应该有什么样的理论框架和实际方法？我们面临什么样的机会和挑战？下面就从理论框架和实际方法两个方面介绍Multi-Agent（多智体）的强化学习。</p>
+<h3 id="理论框架：Stochastic-Game-SG-与-Dec-POMDP"><a href="#理论框架：Stochastic-Game-SG-与-Dec-POMDP" class="headerlink" title="理论框架：Stochastic Game (SG) 与 Dec-POMDP"></a>理论框架：Stochastic Game (SG) 与 Dec-POMDP</h3><a id="more"></a>
+<p>讨论multi agent的问题可以放在Stochastic Game (SG) 的框架下面来展开。SG的定义为 $(S, \mathbf{U}, f, \mathbf{r})$，其中$S$是environment的状态，$\mathbf{U}=(U_1,U_2,…,U_n)$是各个agent的action，$f: S\times\mathbf{U}\times S\rightarrow [0,1]$是状态转移概率函数，$\mathbf{f}=(f_1,f_2,…,f_n): S\times\mathbf{U}\times S\rightarrow\mathbb{R}$是各个agent的回报函数 reward function。</p>
+<p>这里并没有讨论观察observation的问题，即各个agent可以观测到environment的整体状态$s\in S$。而对状态$s$的整体可观测性能够确保Markov性，这样就延续了前面讨论的理论框架；此外要注意reward function、Return都取决于joint action $\mathbf{U}$，因此每个agent的value function 作为Return的概率平均（期望值），也是基于joint action $\mathbf{U}$，而不仅仅来源于自身的action $U_i$。</p>
+<p>如果引入“部分可观测”概念，每个agent只能观测到environment的一部分信息，而不是整体状态，那么Markov性被破坏，我们要把问题放在Dec-POMDP (Decentralized Partially Observable Markov Decision Process)的理论框架下来讨论。Dec-POMDP的定义为$(S,\mathbf{U},f,\mathbf{r},\mathbf{O},Z)，h$，其中$\mathbf{O}=(O_1,O_2,…,O_n)$是每个agent对环境Environment的观测值，观测值来自观测概率函数$Z=Pr(o|s,a): S\times\mathbf{U}\times\mathbf{O}\rightarrow[0,1]$, $h$为horizon。关于Dec-POMDP的Markov性的问题，后面稍加讨论。</p>
+<p>在SG的框架下，我们可以使用博弈论的概念来对优化目标进行说明：</p>
 <ol>
-<li>Selection: 通过某种方法得到当前的最优路径。（$\epsilon$-greedy，或者Upper Confidence Bounds (UCB)，达到exploitation-exploration的平衡）</li>
-<li>Expansion: 在选择的路径最终的叶子节点L（如果不是termination节点），张开后续的子节点C（可能的Action及其对应的后续状态）</li>
-<li>Simulation: 从C开始进行simulation (or: rollout)，通过rollout policy来估算子节点的value。</li>
-<li>Backup: 对C节点的Value，进行反向的back up，更新路径上的value。<br><img src="/images/mcts.png" alt=""></li>
+<li>如果环境Environment的状态为空集：$S=\emptyset$，这种情况下reward只与action有关：$\pi_i: \mathbf{U}\rightarrow\mathbb{R}$。这种设定称为static game。</li>
+<li>如果SG有状态，（即：状态集不是空集），则对于每个状态固定的情况称为一个stage，每个stage下的博弈称为stage game。SG中agent通常会反复访问同一个状态，所以stage game也是repeated game。</li>
+<li>stage game中，单个agent的策略是所在状态的条件概率函数，而agent的整体策略就是每个stage的策略的聚合。</li>
+<li>Best Response: 当其他的agent的策略不变时，单个agent的最佳策略。</li>
+<li>纳什均衡 Nash Equilibrium: 每个agent的best response的集合。任何static game都至少有一个此种均衡，而它一般在Multi-agent RL中作为学习目标，或者同时作为学习目标与更新规则。</li>
+<li>有论文[3]质疑：不需要过于强依赖于纳什均衡的收敛性。有论文[4]提出了以Evolutionary Game Theory为框架的学习方法。</li>
 </ol>
-<p>MCTS与MC的区别在于，MCTS在对model感知的基础上，避免了MC每次随机盲目的走完整个episode带来的模拟次数很多的缺点，可以在每一步都有选择性的剪枝，减少了模拟起始点的集合大小。</p>
-<p>MCTS与传统树搜索的区别在于，MCTS是用增量的方法(incrementally)构建了一个子树，减小了搜索空间。同时它执行的树搜索是一种非对称（asymmetric）的结构，将搜索聚焦在最值得关注的部分。</p>
-<p>因此MCTS是不需要领域策略（不需要知道不同游戏的具体规则，只需要知道胜负结果），适合用在巨大搜索空间的，只需要部分感知model（从根节点到需要expansion的叶子节点，expanded叶子节点以下通过simulation的方式来执行）的有效的剪枝方法。</p>
+<h3 id="Multi-agent-RL-的-Benefits-与挑战"><a href="#Multi-agent-RL-的-Benefits-与挑战" class="headerlink" title="Multi-agent RL 的 Benefits 与挑战"></a>Multi-agent RL 的 Benefits 与挑战</h3><p><strong>Benefits</strong>: </p>
+<ol>
+<li>来自并行计算的效率优化和计算效能的提高。</li>
+<li>Experience sharing可以帮助有类似任务的agent学习过程更快（例如，agents之间通过通信communication来交换信息；有经验的agent起到teacher的作用；普通的agent通过观察与模仿watch and imitate来加速学习，等）。</li>
+<li>鲁棒性 Robustness: 单个agent的失败(failure)可以用其他的agent来take over。</li>
+<li>允许插入新的agent，使得系统更加scalable.</li>
+</ol>
+<p><strong>挑战</strong>:</p>
+<ol>
+<li>维度诅咒。因为reward已经状态转移概率函数来自joint action space，而joint action的空间维度随着agent个数呈指数增长。所以后面我们会试着引入深度学习和Decentralized的去中心化学习方法。</li>
+<li>如何定义通用SG的学习目标(learning goal)？ 由于agent的reward之间的相关性（reward由joint action决定），使得优化不能简单地按照各个agent来独立的进行。因此我们面临的挑战是：1) 学习的稳定性(stability of learning)； 2）对其他agent的行为的适应能力(adaptation to changing behavior of others)。</li>
+<li>非稳态问题(Nonstationarity)：由于agents都是同时学习的，所以会带来moving target的问题，使得学习的目标是非稳态的。</li>
+<li>Exploration-Exploitation的平衡问题：agents不仅要explore环境，还要explore other agents；但是过多的exploration会降低学习的稳定性。</li>
+<li>对agents之间coordination的需要。</li>
+<li>贡献分配(Credit Assignment)问题：即使在单agent的强化学习中，已经存在horizon中具体每一步的reward对最终return的贡献分配问题了；在multi-agent强化学习中，又增加了一个credit分配不确定的因素：agent。每个agent的return都基于所有agents的joint action，那么不同的agent对这个return的贡献程度如何区分？</li>
+<li>Lazy Agent问题：在Coorperation环境下，当一个agent学习到有用的策略时，第二个agent会被不鼓励进行exploration以防止对第一个agent的性能的影响，从而造成了inactive agent使得整体的学习失败。（这一点与前面说的adaptation to other agent’s action有关）。</li>
+<li>Partially Observable情况下，agent所知的不再是环境的状态$S$，而是观测(Observation) $\mathbf{O}_t=(o_{0,t}, o_{1,t}, …, o_{n,t})$。每个单独的agent根据自身的行为action和观察到的观测值observation构成的历史(<strong>action-observation history</strong>) $\mathcal{H}_{i,t}=\{o_{i,t},u_{i,(t-1)},…,o_{i,1},u_{i,0}\}$来计算<strong>belief</strong>作为状态的估计：$\hat{s}_{i,t}=b(\mathcal{H}_{i,t})$。由于<strong>action-observation history</strong> 的存在(来自于restricted horizon)，belief 与action的关系不再是Markov的。解决Non-Markovian的方法可以是用RNN来近似belief，后面的一些算法例如COMA、QMIX会用到这些方法。</li>
+</ol>
+<h3 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a>参考文献：</h3><p>[1] A comprehensive survey of multi-agent reinforcement learning. L. Bus¸oniu, R. Babuska, and B. De Schutter<br>[2] Multi-agent reinforcement learning: A report on challenges and approaches, Sanyam Kapoor.<br>[3] If multi-agent learning is the answer, what is the question? Y. Shoham, R. Powers, and T. Grenager.<br>[4] Evolutionary dynamics of multi-agent learning: A survey, D. Bloembergen, K. Tuyls, D. Hennes, and M. Kaisers.</p>
 
       
     </div>
@@ -397,8 +410,8 @@ MathJax.Hub.Config({
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/18/强化学习漫谈-6-Bootstrapping/" rel="next" title="强化学习漫谈 6：Multi-Step Bootstrapping">
-                <i class="fa fa-chevron-left"></i> 强化学习漫谈 6：Multi-Step Bootstrapping
+              <a href="/2018/10/26/强化学习漫谈-12-DQN-DDPG-A3C/" rel="next" title="强化学习漫谈12：DQN、DDPG、A3C">
+                <i class="fa fa-chevron-left"></i> 强化学习漫谈12：DQN、DDPG、A3C
               </a>
             
           </div>
@@ -406,10 +419,6 @@ MathJax.Hub.Config({
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/09/24/强化学习漫谈-8-On-Policy-Approximation/" rel="prev" title="强化学习漫谈 8：On-Policy with Approximation">
-                强化学习漫谈 8：On-Policy with Approximation <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -535,7 +544,7 @@ MathJax.Hub.Config({
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prioritized-Sweeping-and-Model-Learning"><span class="nav-number">1.</span> <span class="nav-text">Prioritized Sweeping and Model Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heuristic-Search"><span class="nav-number">2.</span> <span class="nav-text">Heuristic Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#蒙特卡洛树搜索-MCTS"><span class="nav-number">3.</span> <span class="nav-text">蒙特卡洛树搜索 MCTS</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#理论框架：Stochastic-Game-SG-与-Dec-POMDP"><span class="nav-number">1.</span> <span class="nav-text">理论框架：Stochastic Game (SG) 与 Dec-POMDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-agent-RL-的-Benefits-与挑战"><span class="nav-number">2.</span> <span class="nav-text">Multi-agent RL 的 Benefits 与挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献："><span class="nav-number">3.</span> <span class="nav-text">参考文献：</span></a></li></ol></div>
             
 
           </div>
