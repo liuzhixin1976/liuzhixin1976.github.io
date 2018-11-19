@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hola Bellman" />
+  <meta name="keywords" content="强化学习," />
 
 
 
@@ -79,14 +79,23 @@
 
 
 
+<meta name="description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   本节介绍去中心化策略的集中式学习(Centralized Learning of Decentralized Policies)这一类算法，具体会介绍三种算法：RLAR，COMA，QMIX。 这类算法的主要想法是：训练过程是离线的，所以可以有环">
+<meta name="keywords" content="强化学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强化学习漫谈-14-Multi-Agent-2">
+<meta property="og:title" content="强化学习漫谈 14：Multi Agent RL 之二">
 <meta property="og:url" content="http://yoursite.com/2018/11/18/强化学习漫谈-14-Multi-Agent-2/index.html">
 <meta property="og:site_name" content="About Learning">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   本节介绍去中心化策略的集中式学习(Centralized Learning of Decentralized Policies)这一类算法，具体会介绍三种算法：RLAR，COMA，QMIX。 这类算法的主要想法是：训练过程是离线的，所以可以有环">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-18T13:01:23.146Z">
+<meta property="og:image" content="http://yoursite.com/images/coma.png">
+<meta property="og:image" content="http://yoursite.com/images/coma_gru.png">
+<meta property="og:image" content="http://yoursite.com/images/coma_critic.png">
+<meta property="og:image" content="http://yoursite.com/images/qmix.png">
+<meta property="og:updated_time" content="2018-11-19T04:06:43.774Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="强化学习漫谈-14-Multi-Agent-2">
+<meta name="twitter:title" content="强化学习漫谈 14：Multi Agent RL 之二">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: { equationNumbers: { autoNumber: &quot;AMS&quot; } } });   本节介绍去中心化策略的集中式学习(Centralized Learning of Decentralized Policies)这一类算法，具体会介绍三种算法：RLAR，COMA，QMIX。 这类算法的主要想法是：训练过程是离线的，所以可以有环">
+<meta name="twitter:image" content="http://yoursite.com/images/coma.png">
 
 
 
@@ -122,7 +131,7 @@
 
 
 
-  <title>强化学习漫谈-14-Multi-Agent-2 | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>强化学习漫谈 14：Multi Agent RL 之二 | About Learning</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -266,7 +275,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强化学习漫谈-14-Multi-Agent-2</h1>
+          <h1 class="post-title" itemprop="name headline">强化学习漫谈 14：Multi Agent RL 之二</h1>
         
 
         <div class="post-meta">
@@ -306,7 +315,7 @@
 
           
           
-             <span id="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/" class="leancloud_visitors" data-flag-title="强化学习漫谈-14-Multi-Agent-2">
+             <span id="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/" class="leancloud_visitors" data-flag-title="强化学习漫谈 14：Multi Agent RL 之二">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -337,7 +346,33 @@
       
 
       
-        
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<p>本节介绍<strong>去中心化策略的集中式学习</strong>(Centralized Learning of Decentralized Policies)这一类算法，具体会介绍三种算法：RLAR，COMA，QMIX。</p>
+<p>这类算法的主要想法是：训练过程是离线的，所以可以有环境状态与joint action的全局观测(fully observation)；而执行过程是在线的，各个agent独自按照学习的策略进行每一步动作，策略不是状态$s$的函数，而是<strong>action-observation history </strong> $\mathcal{H}_{i,t}$的函数。<br><a id="more"></a></p>
+<h3 id="RLAR：Reinforcement-Learning-as-a-Rehearsal-1"><a href="#RLAR：Reinforcement-Learning-as-a-Rehearsal-1" class="headerlink" title="RLAR：Reinforcement Learning as a Rehearsal [1]"></a>RLAR：Reinforcement Learning as a Rehearsal [1]</h3><p>Agent 在训练时知道状态$s$与其他agent的行动 $a^-$, 我们把$\{s, a^-\}$称为<em>rehearsal feature</em>。即使训练时知道rehearsal feature，我们训练的Q function 或者policy任然是action-observation history的函数，而不是rehearsal feature的函数。这一点对于理解RLAR很关键。</p>
+<p>训练时，通过rehearsal feature $(s, a^-)$，我们计算出如下的估计值：<br>1). estimate of transition function $\hat{P}(s^\prime|s,\vec{\mathbf{a}})$.<br>2). estimate of reward function $\hat{R}(s, \vec{\mathbf{a}})$.<br>3). individual observation probability $\hat{o}_i(w_i|s^\prime, \vec{\mathbf{a}})$.<br>4). 对rehearsal feature的预测：$P(s,a^-|h_t)$，其中$h_t$是action-observation history。</p>
+<p>基于上面这些估值，RLAR分了两步：<br>第一步，用普通的MDP $(S,A,\hat{P},\hat{R})$通过Q-Learning计算 Q value。<br>第二步，每个agent计算自己基于local history $h_t$ 的 Q 值：</p>
+<p>\begin{equation}<br>Q_i(h_t, a)=\sum_{s,a^-}P(s,a^-|h_t)Q_i(s,h_t,\vec{\mathbf{a}})<br>\end{equation}</p>
+<p>这里其实是通过对条件概率的marginalization这样的trick来弱化Q的条件，从$s,\vec{\mathbf{a}}$弱化为$h_t$。所以是普通Q Learning方法的一个变种。然后再基于Q value进行greedy的策略选择。</p>
+<h3 id="COMA-Counterfactual-Multi-Agent-Policy-Gradent-2"><a href="#COMA-Counterfactual-Multi-Agent-Policy-Gradent-2" class="headerlink" title="COMA: Counterfactual Multi-Agent Policy Gradent [2]"></a>COMA: Counterfactual Multi-Agent Policy Gradent [2]</h3><p>这个算法采用了Centralized Critic, Decentralized Actor的架构，每个Actor基于action-observation history $\tau$ 来学习策略 $\pi^a(u|\tau)$，其中$u$是action, $\tau$是action-observation history；而集中的Critic则计算基于全局$(s,\vec{\mathbf{a}})$的Q value, 以及基于Q value的一种专门设计的Advantage（后面会有详细介绍），以便对decentralized actors 提供 policy gradient计算过程的输入。Centralized Critic与Decentralized Actor之间的关系如下图所示。<br><img src="/images/coma.png" alt=""></p>
+<p>由于action-observation history是time-step的增量，所以可以用RNN (例如：LSTM，GRU)来拟合$\pi^a(u|\tau)=\pi(h^a,\tau)$，其中$h$为GRU的hidden state，如下图所示。<br><img src="/images/coma_gru.png" alt=""></p>
+<p>在训练Actor时需要policy gradient，以stochastic policy为例（DPG的情况可以进行类似推导），gradient为：<br>\begin{equation}<br>g=\nabla_{\theta^\pi}\color{red}{\log\pi(u|\tau_t^a)}\color{green}{(r+\gamma V(S_{t+1})-V(S_t))}<br>\end{equation}<br>我们面临的问题是，$\color{red}{\log\pi(u|\tau_t^a)}$是针对单个agent的，$\color{green}{(r+\gamma V(S_{t+1})-V(S_t))}$是对所有agents在一起的全局计算，所以这里对于每个agent的policy gradient，如果采用上式的计算，我们无法对不同的agent的贡献进行区分，也就是上节介绍的贡献分配(Credit Assignment)问题。</p>
+<p>所以这里对Policy Gradient的计算需要换个方式。注意$(r+\gamma V(S_{t+1})-V(S_t))$是 TD error，它是advantage $A_t$的一个近似，所以我们的思路可以回到advantage上面来。通过定义针对某个agent a的counterfactual advantage:<br>\begin{equation}<br>A^a(s,u)=Q(s,u)-\sum_{u^{\prime a}}\color{red}{\pi^a(u^{\prime a}|\tau^a)}Q(s,(u^{-a}, u^{\prime a}))<br>\end{equation}<br>注意上式中，$\color{red}{\pi^a(u^{\prime a}|\tau^a)}$来自Actor的GRU输出。<br>然后，centralized critic计算得到的counterfactual advantage输出到decentralized actor，然后通过下式来计算policy gradient进行GRU模型训练：</p>
+<p>\begin{equation}<br>g=\nabla_{\theta^\pi}\color{red}{\log\pi(u|\tau_t^a)}\color{green}{A^a(s,u)}<br>\end{equation}</p>
+<p>上式中红色代表actor的输出，绿色代表critic的输出。</p>
+<p>接下来的问题，在centralized critic中如何更加有效率的计算$A^a(s,u)$？COMA中使用$u_t^{-a}$整体作为神经网络输入的一部分，神经网络的输出是$|U|$(action space的维度)个各自可能的$u^a$，然后加上输入的$u_t^{-a}$后合成整体的基于joint action的$Q(u,s)$，最后带入上面$A^a(s,u)$的计算公式。对critic神经网络的训练可以用Q Learning的方法进行。如下图所示。<br><img src="/images/coma_critic.png" alt=""></p>
+<h3 id="QMIX-3"><a href="#QMIX-3" class="headerlink" title="QMIX [3]"></a>QMIX [3]</h3><p>QMIX 与 COMA的不同之处在于：QMIX不是基于actor-critic的架构，而是直接训练Q值，根据训练得到的Q value进行greedy的策略选择。对于Q value的计算时基于<strong>Value Decomposition Network</strong>的思路，对每个agent单独计算他们各自的Q分量，然后再用一个神经网络将它们组合成整体的$Q_{tot}$。组合的NN需要确保单调不减性，即$\frac{\partial Q_{tot}}{\partial Q_a}&gt;0$，所以这个组合的神经网络（称为Mixing Network）的权重非负。</p>
+<p>对于每个agent来看，他们各自的独立的Q分量 $Q_a(\tau^a,u^a)$是通过agent network来训练的，其中$\tau^a$是agent a的action-observation history，$u^a$是对应的action。和COMA类似的思路，$\tau^a$是随着time step的序列输入，所以agent network可以参考DRQL（Deep Recurrent Q Learning)的思路使用RNN (LSTM, GRU)，与COMA的区别在于，QMIX的agent network输出$Q_a(\tau^a,u^a)$，而COMA的actor输出策略$\pi^a(\tau^a)$。</p>
+<p>将各个agent的$Q^a(\tau^a,u^a)$组合成整体的基于joint action的$Q_{tot}$的神经网络称为Mixing Network，输入是各个$Q^a(\tau^a,u^a)$，以及环境整体状态$s$，输出是整体$Q_{tot}(s,\vec{\mathbf{u}})$。但是为了确保权重$w$的非负性，权重$w$是通过单独的hypernetwork进行训练的，Hypernetwork的输入是整体状态$s$，输出Mixing Network的每一层的权重，Hypernetwork是由一层single linear layer和一个absolute active function构成的，这样就确保了权重的非负性。</p>
+<p>Mixing Network, Agent Network, Hypernetwork组合成的整体的神经网络模型如下图所示。<br><img src="/images/qmix.png" alt=""></p>
+<p>QMIX 对这个整体的网络进行端到端的训练，cost function如下：<br>\begin{equation}<br>\mathcal{L}(\theta)=\sum_{i=1}^b[(y_i^{tot}-Q_{tot}(\tau, \vec{\mathbf{u}},s; \theta))^2]<br>\end{equation}<br>其中：<br>\begin{equation}<br>y^{tot}=r+\gamma \max_{u^\prime}Q_{tot}(\tau^\prime,\vec{\mathbf{u}}^\prime, s^\prime; \theta^-)<br>\end{equation}<br>其中：$b$是replay buffer的batch size，$\theta^-$是target network的参数parameter。所以这个端到端的训练时通常的DQN思路，只是这里的神经网络结构设计是考虑到multi agent的Dec-POMDP特性进行设计的。</p>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p>[1] Concurrent Reinforcement Learning as a Rehearsal for Decentralized Planning Under Uncertainty, L. Kraemer, B. Banerjee<br>[2] Counterfactual Multi-Agent Policy Gradients, J. Foerster, G. Farquhar, T. Afouras, N. Nardelli, S. Whiteson<br>[3] QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning, T. Rashid, M. Samvelyan, C. Schroeder de Witt, G. Farquhar, J. Foerster, S. Whiteson</p>
+
       
     </div>
     
@@ -351,6 +386,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/强化学习/" rel="tag"># 强化学习</a>
+          
+        </div>
       
 
       
@@ -424,8 +465,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -476,6 +526,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RLAR：Reinforcement-Learning-as-a-Rehearsal-1"><span class="nav-number">1.</span> <span class="nav-text">RLAR：Reinforcement Learning as a Rehearsal [1]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#COMA-Counterfactual-Multi-Agent-Policy-Gradent-2"><span class="nav-number">2.</span> <span class="nav-text">COMA: Counterfactual Multi-Agent Policy Gradent [2]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QMIX-3"><span class="nav-number">3.</span> <span class="nav-text">QMIX [3]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

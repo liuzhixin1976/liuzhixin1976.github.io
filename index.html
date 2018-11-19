@@ -268,7 +268,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/" itemprop="url">强化学习漫谈-14-Multi-Agent-2</a></h1>
+                <a class="post-title-link" href="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/" itemprop="url">强化学习漫谈 14：Multi Agent RL 之二</a></h1>
         
 
         <div class="post-meta">
@@ -308,7 +308,7 @@
 
           
           
-             <span id="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/" class="leancloud_visitors" data-flag-title="强化学习漫谈-14-Multi-Agent-2">
+             <span id="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/" class="leancloud_visitors" data-flag-title="强化学习漫谈 14：Multi Agent RL 之二">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -340,9 +340,21 @@
 
       
         
-          
-            
-          
+          <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<p>本节介绍<strong>去中心化策略的集中式学习</strong>(Centralized Learning of Decentralized Policies)这一类算法，具体会介绍三种算法：RLAR，COMA，QMIX。</p>
+<p>这类算法的主要想法是：训练过程是离线的，所以可以有环境状态与joint action的全局观测(fully observation)；而执行过程是在线的，各个agent独自按照学习的策略进行每一步动作，策略不是状态$s$的函数，而是<strong>action-observation history </strong> $\mathcal{H}_{i,t}$的函数。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/11/18/强化学习漫谈-14-Multi-Agent-2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
